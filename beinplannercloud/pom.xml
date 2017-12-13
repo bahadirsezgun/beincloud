@@ -38,9 +38,6 @@
 		
     </dependencies>
 
-	
-
-
 	<modules>
 		<module>beinplannercloud.web</module>
 		<module>beinplannercloud.service</module>
