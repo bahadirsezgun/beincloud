@@ -74,6 +74,14 @@ public class PacketSaleClass extends PacketSaleFactory  {
 	private int 	bonusPayedFlag;
 	
 	
+	@Transient
+	private User user;
+	
+	@Transient
+	private PacketPaymentClass packetPaymentClass;
+
+	
+	
 	
 	public int getProgCount() {
 		return progCount;
@@ -90,14 +98,6 @@ public class PacketSaleClass extends PacketSaleFactory  {
 	public void setBonusPayedFlag(int bonusPayedFlag) {
 		this.bonusPayedFlag = bonusPayedFlag;
 	}
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "user", joinColumns = @JoinColumn(name = "USER_ID") )
-	private User user;
-	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "packet_payment_class", joinColumns = @JoinColumn(name = "SALE_ID") )
-	private PacketPaymentClass packetPaymentClass;
 
 	
 	public long getSaleId() {
