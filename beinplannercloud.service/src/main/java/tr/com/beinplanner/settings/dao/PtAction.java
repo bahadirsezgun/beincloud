@@ -2,19 +2,40 @@ package tr.com.beinplanner.settings.dao;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 @Entity
 @Table(name="pt_action")
 public class PtAction {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	@Column(name="PTA_ID")
 	private long ptaId;
+	
+	@Column(name="PTA_TO")
 	private long ptaTo;
+	
+	@Column(name="PTA_FROM")
 	private long ptaFrom;
+	
+	@Column(name="PTA_DESC")
 	private String ptaDesc;
+	
+	@Column(name="PTA_SUBJECT")
 	private String ptaSubject;
-	private Date createTime;
+	
+	@Column(name="CREATE_TIME")
+	private Date createTime=new Date();
+	
+	@Column(name="PTA_GRP_ID")
 	private int ptaGrpId;
+	
+	@Column(name="PTA_UID")
 	private String ptaUid;
 	
 	public long getPtaId() {
