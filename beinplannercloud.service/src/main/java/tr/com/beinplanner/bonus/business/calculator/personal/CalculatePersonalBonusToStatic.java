@@ -14,12 +14,15 @@ import tr.com.beinplanner.definition.dao.DefBonus;
 import tr.com.beinplanner.definition.service.DefinitionService;
 import tr.com.beinplanner.login.session.LoginSession;
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentPersonal;
+import tr.com.beinplanner.packetpayment.service.PacketPaymentService;
 import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.packetsale.service.PacketSaleService;
 import tr.com.beinplanner.schedule.dao.ScheduleFactory;
+import tr.com.beinplanner.schedule.dao.SchedulePlan;
 import tr.com.beinplanner.schedule.dao.ScheduleTimePlan;
 import tr.com.beinplanner.schedule.dao.ScheduleUsersPersonalPlan;
 import tr.com.beinplanner.schedule.service.ScheduleFactoryService;
+import tr.com.beinplanner.schedule.service.ScheduleService;
 import tr.com.beinplanner.settings.dao.PtRules;
 import tr.com.beinplanner.util.BonusTypes;
 import tr.com.beinplanner.util.PaymentConfirmUtil;
@@ -32,8 +35,6 @@ public class CalculatePersonalBonusToStatic implements CalculateService {
 	@Autowired
 	ScheduleFactoryService scheduleFactoryService;
 	
-	@Autowired
-	ScheduleUsersPersonalPlan scheduleUsersPersonalPlan;
 	
 	@Autowired
 	LoginSession loginSession;
@@ -43,6 +44,13 @@ public class CalculatePersonalBonusToStatic implements CalculateService {
 	
 	@Autowired
 	PacketSaleService packetSaleService;
+	
+	@Autowired
+	ScheduleService scheduleService;
+	
+	
+	@Autowired
+	PacketPaymentService packetPaymentService;
 	
 	@Override
 	public UserBonusObj calculateIt(List<ScheduleTimePlan> scheduleTimePlans,long staffId,int firmId) {
@@ -104,8 +112,9 @@ UserBonusObj userBonusObj=new UserBonusObj();
 				double totalTimePlanPayment=0;
 				
 				for (ScheduleFactory scheduleFactory : usersInTimePlan) {
-					PacketSalePersonal packetSalePersonal=packetSaleService.findPacketSalePersonalById(scheduleFactory.getSaleId());
-					PacketPaymentPersonal packetPaymentPersonal=packetSalePersonal.getPacketPaymentPersonal();
+					PacketSalePersonal packetSalePersonal=packetSaleService.findPacketSalePersonalById(((ScheduleUsersPersonalPlan)scheduleFactory).getSaleId());
+					PacketPaymentPersonal packetPaymentPersonal=(PacketPaymentPersonal)packetPaymentService.findPersonalPacketPaymentBySaleId(packetSalePersonal.getSaleId());
+					
 					
 					double unitPrice=0;
 					int saleCount=0;
@@ -123,8 +132,8 @@ UserBonusObj userBonusObj=new UserBonusObj();
 						}
 						
 					}
-					scheduleFactory.setUnitPrice(unitPrice);
-					scheduleFactory.setSaleCount(saleCount);
+					((ScheduleUsersPersonalPlan)scheduleFactory).setUnitPrice(unitPrice);
+					((ScheduleUsersPersonalPlan)scheduleFactory).setSaleCount(saleCount);
 				}
 				
 				

@@ -13,7 +13,7 @@ import tr.com.beinplanner.packetpayment.dao.PacketPaymentPersonal;
 @Repository
 public interface PacketPaymentPersonalRepository extends CrudRepository<PacketPaymentPersonal, Long>{
 
-	public PacketPaymentFactory findBySaleId(long saleId);
+	public PacketPaymentPersonal findBySaleId(long saleId);
 	
 	@Query(value="SELECT * " + 
 			"	FROM packet_payment_personal " + 

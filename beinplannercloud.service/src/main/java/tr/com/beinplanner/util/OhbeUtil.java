@@ -670,7 +670,7 @@ public class OhbeUtil {
 		return date;
 	}
 	
-	public static Date getThatDateForNight(String dateString,String format,int firmId)  {
+	public static Date getThatDateForNight(String dateString,String format)  {
 		Date date = new Date();
 		if(dateString!=null){
 		

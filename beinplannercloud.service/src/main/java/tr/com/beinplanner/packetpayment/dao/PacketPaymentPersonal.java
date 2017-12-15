@@ -3,17 +3,21 @@ package tr.com.beinplanner.packetpayment.dao;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.context.annotation.Scope;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -91,7 +95,7 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	@Transient
 	private User user;
 	
-	@OneToOne(mappedBy="saleId",fetch=FetchType.LAZY)
+	@Transient
 	private PacketSalePersonal packetSalePersonal;
 
 	public long getPayId() {
@@ -217,7 +221,7 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	public void setPacketPaymentPersonalDetails(List<PacketPaymentPersonalDetail> packetPaymentPersonalDetails) {
 		this.packetPaymentPersonalDetails = packetPaymentPersonalDetails;
 	}
-
+	
 	public PacketSalePersonal getPacketSalePersonal() {
 		return packetSalePersonal;
 	}

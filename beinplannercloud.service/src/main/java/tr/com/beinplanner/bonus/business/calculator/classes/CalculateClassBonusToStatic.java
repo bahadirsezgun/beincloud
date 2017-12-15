@@ -32,8 +32,6 @@ public class CalculateClassBonusToStatic implements CalculateService {
 	@Autowired
 	ScheduleFactoryService scheduleFactoryService;
 	
-	@Autowired
-	ScheduleUsersClassPlan scheduleUsersClassPlan;
 	
 	@Autowired
 	LoginSession loginSession;
@@ -102,7 +100,7 @@ public class CalculateClassBonusToStatic implements CalculateService {
 			double totalTimePlanPayment=0;
 			
 			for (ScheduleFactory scheduleFactory : usersInTimePlan) {
-				PacketSaleClass packetSaleClass=packetSaleService.findPacketSaleClassById(scheduleFactory.getSaleId());
+				PacketSaleClass packetSaleClass=packetSaleService.findPacketSaleClassById(((ScheduleUsersClassPlan)scheduleFactory).getSaleId());
 				PacketPaymentClass packetPaymentClass=packetSaleClass.getPacketPaymentClass();
 				
 				double unitPrice=0;
@@ -121,8 +119,8 @@ public class CalculateClassBonusToStatic implements CalculateService {
 					}
 					
 				}
-				scheduleFactory.setUnitPrice(unitPrice);
-				scheduleFactory.setSaleCount(saleCount);
+				((ScheduleUsersClassPlan)scheduleFactory).setUnitPrice(unitPrice);
+				((ScheduleUsersClassPlan)scheduleFactory).setSaleCount(saleCount);
 			}
 			
 			

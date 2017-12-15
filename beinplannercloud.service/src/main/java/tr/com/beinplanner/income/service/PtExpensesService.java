@@ -24,7 +24,7 @@ public class PtExpensesService {
 			monthStr="0"+month;
 		
 		String startDateStr="01/"+monthStr+"/"+year;
-		Date startDate=OhbeUtil.getThatDateForNight(startDateStr,"dd/MM/yyyy",firmId); 
+		Date startDate=OhbeUtil.getThatDateForNight(startDateStr,"dd/MM/yyyy"); 
 		Date endDate=OhbeUtil.getDateForNextMonth(startDate, 1);
 		
 		return ptExpensesRepository.findPtExpensesForMonth(startDate, endDate, firmId);

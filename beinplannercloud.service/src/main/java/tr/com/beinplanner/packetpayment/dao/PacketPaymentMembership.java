@@ -98,7 +98,7 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 	@Transient
 	private User user;
 	
-	@OneToOne(mappedBy="saleId",fetch=FetchType.LAZY)
+	@Transient
 	private PacketSaleMembership packetSaleMembership;
 
 	public PacketSaleMembership getPacketSaleMembership() {

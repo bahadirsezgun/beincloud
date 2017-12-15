@@ -1,26 +1,24 @@
 package tr.com.beinplanner.schedule.dao;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
+import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
-@JsonTypeName("sucp")
 @Table(name="schedule_users_class_plan")
+@Qualifier("scheduleUsersClassPlan")
+@JsonTypeName("sucp")
 public class ScheduleUsersClassPlan extends ScheduleFactory{
 
 	
@@ -46,6 +44,13 @@ public class ScheduleUsersClassPlan extends ScheduleFactory{
 	private PacketSaleClass packetSaleClass;
 
 
+	
+	@Transient
+	private double unitPrice;
+	
+	@Transient
+	private int saleCount;
+	
 	public long getSchtId() {
 		return schtId;
 	}
@@ -116,6 +121,30 @@ public class ScheduleUsersClassPlan extends ScheduleFactory{
 
 	public void setPacketSaleClass(PacketSaleClass packetSaleClass) {
 		this.packetSaleClass = packetSaleClass;
+	}
+
+
+
+	public double getUnitPrice() {
+		return unitPrice;
+	}
+
+
+
+	public void setUnitPrice(double unitPrice) {
+		this.unitPrice = unitPrice;
+	}
+
+
+
+	public int getSaleCount() {
+		return saleCount;
+	}
+
+
+
+	public void setSaleCount(int saleCount) {
+		this.saleCount = saleCount;
 	}
 	
 

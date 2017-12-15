@@ -1,16 +1,42 @@
 package tr.com.beinplanner.settings.dao;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="db_mail_tbl")
 public class DbMailTbl {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.TABLE)
+	@Column(name="FIRM_ID")
+	private int firmId;
+	
+	
+	
+	@Column(name="HOST_NAME")
 	private String hostName;
+	@Column(name="FROM_NAME")
 	private String fromName;
+	@Column(name="MAIL_USERNAME")
 	private String mailUsername;
+	
+	@Column(name="MAIL_PASSWORD")
 	private String mailPassword;
 	
+
+	@Column(name="SMTP_PORT")
 	private int smtpPort;
+
+	@Column(name="SMTP_AUTH")
 	private int smtpAuth;
+
+	@Column(name="USE_SSL")
 	private int useSsl;
-	private int firmId;
 	
 	
 	public String getHostName() {

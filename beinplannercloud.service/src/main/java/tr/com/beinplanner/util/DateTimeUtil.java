@@ -258,7 +258,7 @@ public class DateTimeUtil {
 		return cal.get(Calendar.MONTH)+1;
 	}
 	
-	public static List<ScheduleDayObj> getDayList(Date startDate,int dayDuration,int firmId,PtGlobal ptGlobal){
+	public static List<ScheduleDayObj> getDayList(Date startDate,int dayDuration,PtGlobal ptGlobal){
 		List<ScheduleDayObj> dayLists=new ArrayList<ScheduleDayObj>();
 		for (int i = 0; i < dayDuration; i++) {
 			ScheduleDayObj dayList=new ScheduleDayObj();
@@ -271,7 +271,7 @@ public class DateTimeUtil {
 					
 			Date date=OhbeUtil.getDateForNextDate(startDate, i);
 			dayList.setDayName(date_format.format(date));
-			dayList.setDayDate(OhbeUtil.getThatDateForNight(OhbeUtil.getDateStrByFormat( date, dateTimeFormat) , dateTimeFormat,firmId) );
+			dayList.setDayDate(OhbeUtil.getThatDateForNight(OhbeUtil.getDateStrByFormat( date, dateTimeFormat) , dateTimeFormat) );
 			
 			SimpleDateFormat date_format1 = new SimpleDateFormat(dateFormat);
 			

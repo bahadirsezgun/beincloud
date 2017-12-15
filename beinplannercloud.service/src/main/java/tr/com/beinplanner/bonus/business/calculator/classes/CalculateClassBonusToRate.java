@@ -14,9 +14,7 @@ import tr.com.beinplanner.definition.dao.DefBonus;
 import tr.com.beinplanner.definition.service.DefinitionService;
 import tr.com.beinplanner.login.session.LoginSession;
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentClass;
-import tr.com.beinplanner.packetpayment.dao.PacketPaymentFactory;
 import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
-import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
 import tr.com.beinplanner.packetsale.service.PacketSaleService;
 import tr.com.beinplanner.schedule.dao.ScheduleFactory;
 import tr.com.beinplanner.schedule.dao.ScheduleTimePlan;
@@ -35,9 +33,6 @@ public class CalculateClassBonusToRate implements CalculateService {
 
 	@Autowired
 	ScheduleFactoryService scheduleFactoryService;
-	
-	@Autowired
-	ScheduleUsersClassPlan scheduleUsersClassPlan;
 	
 	@Autowired
 	LoginSession loginSession;
@@ -105,7 +100,7 @@ public class CalculateClassBonusToRate implements CalculateService {
 			double totalTimePlanPayment=0;
 			
 			for (ScheduleFactory scheduleFactory : usersInTimePlan) {
-				PacketSaleClass packetSaleClass=packetSaleService.findPacketSaleClassById(scheduleFactory.getSaleId());
+				PacketSaleClass packetSaleClass=packetSaleService.findPacketSaleClassById(((ScheduleUsersClassPlan)scheduleFactory).getSaleId());
 				PacketPaymentClass packetPaymentClass=packetSaleClass.getPacketPaymentClass();
 				
 				double unitPrice=0;
@@ -133,8 +128,8 @@ public class CalculateClassBonusToRate implements CalculateService {
 					totalTimePlanPayment+=unitPrice;
 					saleCount=packetSaleClass.getProgCount();
 				}
-				scheduleFactory.setUnitPrice(unitPrice);
-				scheduleFactory.setSaleCount(saleCount);
+				((ScheduleUsersClassPlan)scheduleFactory).setUnitPrice(unitPrice);
+				((ScheduleUsersClassPlan)scheduleFactory).setSaleCount(saleCount);
 			}
 			
 			userBonusDetailObj.setSchCount(scheduleTimePlan.getSchCount());

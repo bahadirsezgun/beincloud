@@ -1,9 +1,8 @@
 package tr.com.beinplanner.schedule.dao;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,15 +10,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import tr.com.beinplanner.schedule.service.ScheduleService;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="schedule_time_plan")
+@SecondaryTable(name="schedule_plan",pkJoinColumns=@PrimaryKeyJoinColumn(name="SCH_ID"))
 public class ScheduleTimePlan {
 
 	
@@ -48,12 +52,15 @@ public class ScheduleTimePlan {
 	private String tpComment;
 	
 	
+	@Column(name="PROG_ID",table="schedule_plan")
+	private long progId;
+	
+	
 	@OneToMany(mappedBy="schtId",fetch=FetchType.LAZY)
     private List<ScheduleUsersClassPlan>  scheduleUsersClassPlans;
 	
 	@OneToMany(mappedBy="schtId",fetch=FetchType.LAZY)
     private List<ScheduleUsersPersonalPlan>  scheduleUsersPersonalPlans;
-	
 	
 	
 	public List<ScheduleUsersClassPlan> getScheduleUsersClassPlans() {
@@ -101,8 +108,6 @@ public class ScheduleTimePlan {
 	
 	@Transient
 	private int progType;
-	@Transient
-	private int progId;
 	@Transient
 	private String progName;
 	@Transient
@@ -270,11 +275,12 @@ public class ScheduleTimePlan {
 		this.progType = progType;
 	}
 
-	public int getProgId() {
+	public long getProgId() {
+		
 		return progId;
 	}
 
-	public void setProgId(int progId) {
+	public void setProgId(long progId) {
 		this.progId = progId;
 	}
 
@@ -341,6 +347,8 @@ public class ScheduleTimePlan {
 	public void setParticipants(String participants) {
 		this.participants = participants;
 	}
+
+	
 	
 	
 	

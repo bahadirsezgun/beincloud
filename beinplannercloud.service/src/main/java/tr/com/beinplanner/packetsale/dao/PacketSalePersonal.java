@@ -23,7 +23,7 @@ import tr.com.beinplanner.packetpayment.dao.PacketPaymentClass;
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentPersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
-@Table(name="packetSalePersonal")
+@Table(name="packet_sale_personal")
 @Qualifier("packetSalePersonal")
 @JsonTypeName("psp")
 public class PacketSalePersonal extends PacketSaleFactory {
@@ -91,12 +91,10 @@ public class PacketSalePersonal extends PacketSaleFactory {
 		this.bonusPayedFlag = bonusPayedFlag;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "user", joinColumns = @JoinColumn(name = "USER_ID") )
+	@Transient
 	private User user;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "packet_payment_personal", joinColumns = @JoinColumn(name = "SALE_ID") )
+	@Transient
 	private PacketPaymentPersonal packetPaymentPersonal;
 
 	
@@ -204,6 +202,7 @@ public class PacketSalePersonal extends PacketSaleFactory {
 		this.user = user;
 	}
 
+	
 	public PacketPaymentPersonal getPacketPaymentPersonal() {
 		return packetPaymentPersonal;
 	}

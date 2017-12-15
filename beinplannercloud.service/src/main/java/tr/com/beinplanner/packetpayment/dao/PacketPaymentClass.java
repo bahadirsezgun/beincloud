@@ -88,7 +88,7 @@ public class PacketPaymentClass extends PacketPaymentFactory {
 	@Transient
 	private User user;
 	
-	@OneToOne(mappedBy="saleId",fetch=FetchType.LAZY)
+	@Transient
 	private PacketSaleClass packetSaleClass;
 
 	public long getPayId() {

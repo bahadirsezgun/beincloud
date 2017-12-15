@@ -4,6 +4,7 @@
     <groupId>com.beinplanner</groupId>
     <artifactId>beinplannercloud</artifactId>
     <version>1.0.1-SNAPSHOT</version>
+    <relativePath>../beinplannercloud</relativePath>
   </parent>
   <artifactId>beinplannercloud.web</artifactId>
   <properties>

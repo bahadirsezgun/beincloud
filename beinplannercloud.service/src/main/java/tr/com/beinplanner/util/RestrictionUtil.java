@@ -1,6 +1,6 @@
 package tr.com.beinplanner.util;
 
-public class RestFlagUtil {
+public class RestrictionUtil {
 
 	
 	public static final int RESTIRICTION_FLAG_NO=0;

@@ -84,12 +84,11 @@ public class PacketSaleMembership extends PacketSaleFactory {
 		this.bonusPayedFlag = bonusPayedFlag;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "user", joinColumns = @JoinColumn(name = "USER_ID") )
+	@Transient
 	private User user;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "packet_payment_membership", joinColumns = @JoinColumn(name = "SALE_ID") )
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "SALE_ID")
 	private PacketPaymentMembership packetPaymentMembership;
 
 	

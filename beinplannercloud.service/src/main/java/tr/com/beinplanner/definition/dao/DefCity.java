@@ -1,7 +1,5 @@
 package tr.com.beinplanner.definition.dao;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,13 +20,13 @@ public class DefCity  {
 	@Column(name="STATE_ID")
 	private int stateId;
 	
-	@Column(name="STATE_ID")
+	@Column(name="CITY_NAME")
 	private String cityName;
 	
 	@Transient
 	private boolean selected;
 	
-	@Column(name="STATE_ID")
+	@Column(name="FIRM_ID")
 	private int firmId;
 
 	public int getCityId() {
