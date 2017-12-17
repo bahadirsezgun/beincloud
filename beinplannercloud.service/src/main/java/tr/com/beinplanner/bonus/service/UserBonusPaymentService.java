@@ -43,4 +43,16 @@ public class UserBonusPaymentService {
 	  return totalPayment;
   }
   
+  public double findTotalOfDateBonusPaymentPersonal(int firmId, Date startDate ,Date endDate) {
+	  List<UserBonusPaymentPersonal> userBonusPaymentPersonals=userBonusPaymentPersonalRepository.findTotalOfDateBonusPaymentPersonal(firmId, startDate, endDate);
+	  double totalPayment=userBonusPaymentPersonals.stream().mapToDouble(ubpp->ubpp.getBonAmount()).sum();
+	  return totalPayment;
+  }
+  
+  public double findTotalOfDateBonusPaymentClass(int firmId, Date startDate ,Date endDate) {
+	  List<UserBonusPaymentClass> userBonusPaymentClasses=userBonusPaymentClassRepository.findTotalOfDateBonusPaymentClass(firmId, startDate, endDate);
+	  double totalPayment=userBonusPaymentClasses.stream().mapToDouble(ubpc->ubpc.getBonAmount()).sum();
+	  return totalPayment;
+  }
+  
 }

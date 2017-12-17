@@ -6,11 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentClass;
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentPersonal;
+import tr.com.beinplanner.program.dao.ProgramPersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="packet_sale_personal")
@@ -73,6 +76,8 @@ public class PacketSalePersonal extends PacketSaleFactory {
 	@Column(name="BONUS_PAYED_FLAG")
 	private int 	bonusPayedFlag;
 	
+	@Transient
+	private String 	progType="psp";
 	
 	
 	public int getProgCount() {
@@ -91,12 +96,18 @@ public class PacketSalePersonal extends PacketSaleFactory {
 		this.bonusPayedFlag = bonusPayedFlag;
 	}
 
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="USER_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSP_TO_USER_FK"),insertable=false,updatable=false)
 	private User user;
 	
 	@Transient
 	private PacketPaymentPersonal packetPaymentPersonal;
 
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSP_TO_PP_FK"),insertable=false,updatable=false)
+	private ProgramPersonal programPersonal;
+
+	
 	
 	public long getSaleId() {
 		return saleId;
@@ -209,6 +220,22 @@ public class PacketSalePersonal extends PacketSaleFactory {
 
 	public void setPacketPaymentPersonal(PacketPaymentPersonal packetPaymentPersonal) {
 		this.packetPaymentPersonal = packetPaymentPersonal;
+	}
+
+	public String getProgType() {
+		return progType;
+	}
+
+	public void setProgType(String progType) {
+		this.progType = progType;
+	}
+
+	public ProgramPersonal getProgramPersonal() {
+		return programPersonal;
+	}
+
+	public void setProgramPersonal(ProgramPersonal programPersonal) {
+		this.programPersonal = programPersonal;
 	}
 
 	

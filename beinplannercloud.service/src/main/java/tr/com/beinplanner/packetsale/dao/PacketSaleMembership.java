@@ -6,11 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentClass;
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentMembership;
+import tr.com.beinplanner.program.dao.ProgramMembership;
+import tr.com.beinplanner.program.dao.ProgramPersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="packet_sale_membership")
@@ -73,6 +77,8 @@ public class PacketSaleMembership extends PacketSaleFactory {
 	private int 	bonusPayedFlag;
 	
 	
+	@Transient
+	private String 	progType="psm";
 	
 	
 
@@ -84,12 +90,17 @@ public class PacketSaleMembership extends PacketSaleFactory {
 		this.bonusPayedFlag = bonusPayedFlag;
 	}
 
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="USER_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSP_TO_USER_FK"),insertable=false,updatable=false)
 	private User user;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "SALE_ID")
 	private PacketPaymentMembership packetPaymentMembership;
+
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSM_TO_PM_FK"),insertable=false,updatable=false)
+	private ProgramMembership programMembership;
 
 	
 	public long getSaleId() {
@@ -202,6 +213,14 @@ public class PacketSaleMembership extends PacketSaleFactory {
 
 	public void setPacketPaymentMembership(PacketPaymentMembership packetPaymentMembership) {
 		this.packetPaymentMembership = packetPaymentMembership;
+	}
+
+	public String getProgType() {
+		return progType;
+	}
+
+	public void setProgType(String progType) {
+		this.progType = progType;
 	}
 
 	

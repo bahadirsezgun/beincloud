@@ -513,7 +513,7 @@
 									<td>{{ps.progType=='psp'?('packetSalePersonal'|translate):(ps.progType=='psc'?('packetSaleClass'|translate):('packetSaleMembership'|translate) )}} <br /> <small><i
 											class="fa fa-clock-o"></i> {{('createdDate'|translate)+" "+ps.changeDateStr}}</small>
 									</td>
-									<td><span class="pie">{{ps.userName+" "+ps.userSurname}}</span></td>
+									<td><span class="pie">{{ps.user.userName+" "+ps.user.userSurname}}</span></td>
 									<td><strong>{{ps.salesDateStr}}</strong></td>
 									<td><a href=""><i class="fa fa-check {{ps.complete==1?'text-success':'text-danger'}} "></i></a></td>
 								</tr>

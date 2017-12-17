@@ -100,7 +100,7 @@ UserBonusObj userBonusObj=new UserBonusObj();
 				
 				double bonusPrice=0;
 				for (DefBonus defBonus : defBonuses) {
-					if(defBonus.getBonusProgId()==scheduleTimePlan.getProgId()){
+					if(defBonus.getBonusProgId()==scheduleTimePlan.getSchedulePlan().getProgId()){
 						bonusPrice=defBonus.getBonusValue();
 						break;
 					}

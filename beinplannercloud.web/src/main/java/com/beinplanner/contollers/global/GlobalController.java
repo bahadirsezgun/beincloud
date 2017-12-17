@@ -10,8 +10,14 @@ import tr.com.beinplanner.login.session.LoginSession;
 import tr.com.beinplanner.result.HmiResultObj;
 import tr.com.beinplanner.settings.dao.PtGlobal;
 import tr.com.beinplanner.settings.service.SettingsService;
-import tr.com.beinplanner.user.dao.User;
-
+/**
+ * 
+ * @author Bahadır Sezgun
+ * @comment Her firmanın kendine ait ayarları (Dil,Para birimi, Tarih formatı) bulunmaktadır. Firma bazında bu ayarlar 
+ * veritabanından alınır ve AngularJs ile CommonService.setPtGlobal() function aracılığı ile @rootScope javascript objesi 
+ * icerisine yerleştirilir.
+ *
+ */
 @RestController
 @RequestMapping("/bein/global")
 public class GlobalController {

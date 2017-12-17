@@ -95,7 +95,7 @@ public class CalculatePersonalBonusToStaticRate implements CalculateService {
 			
 			double bonusRate=0;
 			for (DefBonus defBonus : defBonuses) {
-				if(defBonus.getBonusProgId()==scheduleTimePlan.getProgId()){
+				if(defBonus.getBonusProgId()==scheduleTimePlan.getSchedulePlan().getProgId()){
 					bonusRate=defBonus.getBonusValue();
 					break;
 				}

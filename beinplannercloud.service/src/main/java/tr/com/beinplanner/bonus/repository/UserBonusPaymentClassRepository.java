@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import tr.com.beinplanner.bonus.dao.UserBonusPaymentClass;
+import tr.com.beinplanner.bonus.dao.UserBonusPaymentPersonal;
 
 @Repository
 public interface UserBonusPaymentClassRepository  extends CrudRepository<UserBonusPaymentClass, Long> {
@@ -20,6 +21,14 @@ public interface UserBonusPaymentClassRepository  extends CrudRepository<UserBon
 			"				 ORDER BY a.BON_START_DATE",nativeQuery=true)
 	 public List<UserBonusPaymentClass>	findUserBonusPaymentClassByDate(@Param("schStaffId") long schStaffId,@Param("startDate")  Date startDate,@Param("endDate")  Date endDate);
 
+	@Query(value="SELECT a.* FROM user_bonus_payment_class a " + 
+			"				 WHERE a.BON_START_DATE>=:startDate  " + 
+			"				   AND a.BON_START_DATE<:endDate " + 
+			"				   AND a.USER_ID IN (SELECT USER_ID FROM user WHERE FIRM_ID=:firmId)  " + 
+			"				 ORDER BY a.BON_START_DATE",nativeQuery=true)
+	 public List<UserBonusPaymentClass>	findTotalOfDateBonusPaymentClass(@Param("firmId") int firmId,@Param("startDate")  Date startDate,@Param("endDate")  Date endDate);
+
+	
 	public List<UserBonusPaymentClass> findByFirmIdAndBonMonthAndBonYear(int firmId, int month ,int year);
 
 }

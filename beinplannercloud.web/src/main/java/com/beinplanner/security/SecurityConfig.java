@@ -46,11 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	        
 	        http
             .authorizeRequests()
-                .antMatchers("/homerlib/**", "/app/**", "/jslib/**","/index.html","/lock.html","**/*.js","**/*.css").permitAll()
+                .antMatchers("/homerlib/**","/login.html", "/app/**", "/jslib/**","/index.html","/lock.html","**/*.js","**/*.css").permitAll()
                 .anyRequest().authenticated()
                 .and()
               .formLogin()
-                        .loginPage("/index.html").failureUrl("/lock.html")
+                        .loginPage("/login").failureUrl("/lock.html")
                         .loginProcessingUrl("/login").permitAll().defaultSuccessUrl("/bein/index.html/#/dashboard",true)
              .and()
              .logout().logoutSuccessUrl("/lock.html")

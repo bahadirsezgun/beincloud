@@ -18,7 +18,7 @@ public interface  PtExpensesRepository  extends CrudRepository<PtExpenses, Long>
 			"				  WHERE PE_DATE>=:startDate " + 
 			"				  AND PE_DATE<:endDate " + 
 			"				  AND FIRM_ID=:firmId " + 
-			"				  ORDER BY a.PE_DATE ",nativeQuery=true)
-	List<PtExpenses> findPtExpensesForMonth(@Param("startDate") Date startDate,@Param("endDate") Date endDate,@Param("firmId") int firmId );
+			"				  ORDER BY PE_DATE ",nativeQuery=true)
+	List<PtExpenses> findPtExpensesForDate(@Param("startDate") Date startDate,@Param("endDate") Date endDate,@Param("firmId") int firmId );
 	
 }

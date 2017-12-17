@@ -12,17 +12,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.context.annotation.Scope;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
 import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
@@ -64,22 +65,11 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	@Column(name="PAY_TYPE")
 	private int payType;
 	
-	@Column(name="FIRM_ID")
-	private int firmId;
 	
-	public int getFirmId() {
-		return firmId;
-	}
-
-	public void setFirmId(int firmId) {
-		this.firmId = firmId;
-	}
-
+	
 	@Transient
 	private String payComment;
 	
-	@Transient
-	private double packetPrice;
 	
 	@Transient
 	private String salesDateStr;
@@ -95,7 +85,8 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	@Transient
 	private User user;
 	
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="SALE_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PPP_TO_PSP_FK"),insertable=false,updatable=false)
 	private PacketSalePersonal packetSalePersonal;
 
 	public long getPayId() {
@@ -178,13 +169,7 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 		this.payComment = payComment;
 	}
 
-	public double getPacketPrice() {
-		return packetPrice;
-	}
-
-	public void setPacketPrice(double packetPrice) {
-		this.packetPrice = packetPrice;
-	}
+	
 
 	public String getSalesDateStr() {
 		return salesDateStr;

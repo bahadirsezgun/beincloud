@@ -14,7 +14,15 @@ import tr.com.beinplanner.settings.service.SettingsService;
 import tr.com.beinplanner.user.dao.CustomUserDetails;
 import tr.com.beinplanner.user.dao.User;
 import tr.com.beinplanner.user.repository.UserRepository;
-
+/**
+ * 
+ * @author Bahadır Sezgun
+ * @comment spring security kullanılarak veritabanı kullanıcı adı ve parola kontrolü yapılır.<br> 
+ * Request ile gelen username veritabanından alınır. LoginSession objesi içerisine yerleştirilir. <br>
+ * Sonrasında parola kontrolü yapılır. bkz. SecurityConfig.configureGlobal
+ * 
+ *
+ */
 @Service
 @Qualifier("userSecurityService")
 public class UserSecurityService  implements UserDetailsService {

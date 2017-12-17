@@ -6,11 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.packetpayment.dao.PacketPaymentClass;
+import tr.com.beinplanner.program.dao.ProgramClass;
+import tr.com.beinplanner.program.dao.ProgramMembership;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="packet_sale_class")
@@ -73,15 +77,21 @@ public class PacketSaleClass extends PacketSaleFactory  {
 	@Column(name="BONUS_PAYED_FLAG")
 	private int 	bonusPayedFlag;
 	
-	
 	@Transient
+	private String 	progType="psc";
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="USER_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSP_TO_USER_FK"),insertable=false,updatable=false)
 	private User user;
 	
 	@Transient
 	private PacketPaymentClass packetPaymentClass;
 
 	
-	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSC_TO_PC_FK"),insertable=false,updatable=false)
+	private ProgramClass programClass;
+
 	
 	public int getProgCount() {
 		return progCount;
@@ -210,6 +220,14 @@ public class PacketSaleClass extends PacketSaleFactory  {
 
 	public void setPacketPaymentClass(PacketPaymentClass packetPaymentClass) {
 		this.packetPaymentClass = packetPaymentClass;
+	}
+
+	public String getProgType() {
+		return progType;
+	}
+
+	public void setProgType(String progType) {
+		this.progType = progType;
 	}
 	
 	

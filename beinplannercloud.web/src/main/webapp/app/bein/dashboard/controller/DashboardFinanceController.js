@@ -126,44 +126,60 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 			$scope.ptLang=($rootScope.ptGlobal.ptLang).substring(0,2);
 		    $scope.ptDateFormat=$rootScope.ptGlobal.ptScrDateFormat;
 		    $scope.ptCurrency=$rootScope.ptGlobal.ptCurrency;
-		    $scope.$apply();
-			
+		    
 		    findPastForYear();
-		    /*
-			loggedInUser();
 		    getLeftPayments();
 		    getActiveMembers();
-			getTodayPayments();
-			getSaledPackets();
-			getPacketPayments();
-			findTotalMemberInSystem();
+		    getTodayPayments();
+		    getSaledPackets();
+		    getPacketPayments();
+		    /*
+			loggedInUser();
+		    findTotalMemberInSystem();
+					
+		  			findPastForYearCount();
+		  			findSpecialDates();
+		  			lastClasses();
 			*/
 			
 		}else{
 		
 		
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/setting/findPtGlobal",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				if(res!=null){
-					$scope.ptLang=(res.ptLang).substring(0,2);
-				    $scope.ptDateFormat=res.ptScrDateFormat;
-				    $scope.ptCurrency=res.ptCurrency;
-				    $scope.$apply();
+			$.ajax({
+	    		  type:'POST',
+	    		  url: "/bein/global/getGlobals",
+	    		  contentType: "application/json; charset=utf-8",				    
+	    		  dataType: 'json', 
+	    		  cache:false
+	    		}).done(function(result) {
+	    			if(result!=null){
+	    				var res=result.resultObj;
+	    				$scope.ptTz=res.ptTz;
+	    				$scope.ptCurrency=res.ptCurrency;
+	    				$scope.ptStaticIp=res.ptStaticIp;
+	    				$scope.ptLang=(res.ptLang).substring(0,2);
+	    				$scope.ptDateFormat=res.ptScrDateFormat;
+	    				//loggedInUser();
+	    				
+	    				
+	    				$translate.use($scope.ptLang);
+	    				$translate.refresh;
+	    				commonService.changeLang($scope.ptLang);
+	    				commonService.setPtGlobal(res);
+	    				$scope.$apply();
 				  
 				    findPastForYear();
-		  			
-				   
-				    /*
 				    getLeftPayments();
 				    getActiveMembers();
-					getTodayPayments();
-					getSaledPackets();
-					getPacketPayments();
+				    getTodayPayments();
+				    getSaledPackets();
+				    getPacketPayments();
+				    /*
+				    
+				    
+					
+					
+					
 					findTotalMemberInSystem();
 					
 		  			findPastForYearCount();
@@ -236,13 +252,12 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		
 		$.ajax({
 			  type:'POST',
-			  url: "../pt/dashboard/activeMembers",
+			  url: "/bein/dashboard/activeMembers",
 			  contentType: "application/json; charset=utf-8",				    
 			  dataType: 'json', 
 			  cache:false
 			}).done(function(res) {
-				$scope.activeMemberCount=res.activeMemberCount;
-				
+				$scope.activeMemberCount=res.resultObj.activeMemberCount;
 				$scope.$apply();
 			});
 		
@@ -251,20 +266,7 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 
 	
    
-   function getLeftPayments(){
-		
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/dashboard/leftPayment",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.leftPaymentInfo=res;
-				$scope.$apply();
-			});
-		
-	}
+   
    
    
    
@@ -274,12 +276,12 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		
 		$.ajax({
 			  type:'POST',
-			  url: "../pt/dashboard/todayIncomeExpense",
+			  url: "/bein/dashboard/todayIncomeExpense",
 			  contentType: "application/json; charset=utf-8",				    
 			  dataType: 'json', 
 			  cache:false
 			}).done(function(res) {
-				$scope.todayPayment=res;
+				$scope.todayPayment=res.resultObj;
 				$scope.$apply();
 			});
 		
@@ -291,7 +293,7 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		
 		$.ajax({
 			  type:'POST',
-			  url: "../pt/dashboard/packetPayments",
+			  url: "/bein/dashboard/getPacketPayments",
 			  contentType: "application/json; charset=utf-8",				    
 			  dataType: 'json', 
 			  cache:false
@@ -309,18 +311,33 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
     	
     	$.ajax({
 			  type:'POST',
-			  url: "../pt/dashboard/packetSales",
+			  url: "/bein/dashboard/getPacketSales",
 			  contentType: "application/json; charset=utf-8",				    
 			  dataType: 'json', 
 			  cache:false
 			}).done(function(res) {
-				$scope.packetSales=res;
+				$scope.packetSales=res.resultObj;
 				$scope.$apply();
 			});
     	
     }
    
    
+   function getLeftPayments(){
+		
+		$.ajax({
+			  type:'POST',
+			  url: "/bein/dashboard/leftPayments",
+			  contentType: "application/json; charset=utf-8",				    
+			  dataType: 'json', 
+			  cache:false
+			}).done(function(res) {
+				$scope.leftPaymentInfo=res.resultObj;
+				$scope.$apply();
+			});
+		
+	}
+    
 	$scope.lastMonthName;
 	$scope.lastMonthEarn=0;
 	$scope.lastMonthExpense=0;
@@ -347,7 +364,7 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		    	$scope.thisYearExpense=0;
 		    	$scope.thisYearIncome=0;
 		    	
-				$scope.incomes=res;
+				$scope.incomes=res.resultObj;
 				var maxEarn=0;
 				$.each($scope.incomes,function(i,income){
 				    if($scope.month==1){
@@ -398,12 +415,12 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	
 		$.ajax({
 			  type:'POST',
-			  url: "../pt/incomeController/findPastForYear/"+$scope.prevYear+"/"+$scope.firmId,
+			  url: "/bein/dashboard/findPastForYear/"+$scope.prevYear,
 			  contentType: "application/json; charset=utf-8",				    
 			  dataType: 'json', 
 			  cache:false
 			}).done(function(res) {
-				$scope.prevIncomes=res;
+				$scope.prevIncomes=res.resultObj;
 				
 			
 				    if($scope.month==1){

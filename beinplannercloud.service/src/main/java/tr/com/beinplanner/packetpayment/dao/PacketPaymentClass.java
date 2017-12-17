@@ -3,14 +3,20 @@ package tr.com.beinplanner.packetpayment.dao;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -18,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
 import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
+import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="packet_payment_class")
@@ -39,6 +46,8 @@ public class PacketPaymentClass extends PacketPaymentFactory {
 	@Column(name="PAY_AMOUNT")
 	private double payAmount;
 	
+	
+	
 	@Column(name="PAY_DATE")
 	private Date payDate;
 	
@@ -57,22 +66,11 @@ public class PacketPaymentClass extends PacketPaymentFactory {
 	@Column(name="PAY_TYPE")
 	private int payType;
 	
-	@Column(name="FIRM_ID")
-	private int firmId;
 	
-	public int getFirmId() {
-		return firmId;
-	}
-
-	public void setFirmId(int firmId) {
-		this.firmId = firmId;
-	}
 
 	@Transient
 	private String payComment;
 	
-	@Transient
-	private double packetPrice;
 	
 	@Transient
 	private String salesDateStr;
@@ -81,15 +79,16 @@ public class PacketPaymentClass extends PacketPaymentFactory {
 	@OneToMany(mappedBy="payId",fetch=FetchType.EAGER)
 	private List<PacketPaymentClassDetail> packetPaymentClassDetails;
 	
-	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="SALE_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PPC_TO_PSC_FK"),insertable=false,updatable=false)
+	private PacketSaleClass packetSaleClass;
+
 	/***************************************************************/
 	/**********************USER ***********************************/
 	/**************************************************************/
 	@Transient
 	private User user;
 	
-	@Transient
-	private PacketSaleClass packetSaleClass;
 
 	public long getPayId() {
 		return payId;
@@ -171,13 +170,7 @@ public class PacketPaymentClass extends PacketPaymentFactory {
 		this.payComment = payComment;
 	}
 
-	public double getPacketPrice() {
-		return packetPrice;
-	}
 
-	public void setPacketPrice(double packetPrice) {
-		this.packetPrice = packetPrice;
-	}
 
 	public String getSalesDateStr() {
 		return salesDateStr;

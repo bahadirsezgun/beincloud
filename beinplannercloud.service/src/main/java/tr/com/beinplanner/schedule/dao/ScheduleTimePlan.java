@@ -3,9 +3,11 @@ package tr.com.beinplanner.schedule.dao;
 import java.sql.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,11 +21,11 @@ import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.schedule.service.ScheduleService;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="schedule_time_plan")
-@SecondaryTable(name="schedule_plan",pkJoinColumns=@PrimaryKeyJoinColumn(name="SCH_ID"))
 public class ScheduleTimePlan {
 
 	
@@ -52,9 +54,9 @@ public class ScheduleTimePlan {
 	private String tpComment;
 	
 	
-	@Column(name="PROG_ID",table="schedule_plan")
-	private long progId;
-	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="SCH_ID",foreignKey=@ForeignKey(foreignKeyDefinition="STP_TO_SP_FK"),insertable=false,updatable=false)
+	private SchedulePlan schedulePlan;
 	
 	@OneToMany(mappedBy="schtId",fetch=FetchType.LAZY)
     private List<ScheduleUsersClassPlan>  scheduleUsersClassPlans;
@@ -275,15 +277,7 @@ public class ScheduleTimePlan {
 		this.progType = progType;
 	}
 
-	public long getProgId() {
-		
-		return progId;
-	}
-
-	public void setProgId(long progId) {
-		this.progId = progId;
-	}
-
+	
 	public String getProgName() {
 		return progName;
 	}
@@ -346,6 +340,14 @@ public class ScheduleTimePlan {
 
 	public void setParticipants(String participants) {
 		this.participants = participants;
+	}
+
+	public SchedulePlan getSchedulePlan() {
+		return schedulePlan;
+	}
+
+	public void setSchedulePlan(SchedulePlan schedulePlan) {
+		this.schedulePlan = schedulePlan;
 	}
 
 	

@@ -3,14 +3,20 @@ package tr.com.beinplanner.packetpayment.dao;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -59,22 +65,11 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 	@Column(name="PAY_TYPE")
 	private int payType;
 	
-	@Column(name="FIRM_ID")
-	private int firmId;
-	
-	public int getFirmId() {
-		return firmId;
-	}
 
-	public void setFirmId(int firmId) {
-		this.firmId = firmId;
-	}
 
 	@Transient
 	private String payComment;
 	
-	@Transient
-	private double packetPrice;
 	
 	@Transient
 	private String salesDateStr;
@@ -98,7 +93,8 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 	@Transient
 	private User user;
 	
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="SALE_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PPM_TO_PSM_FK"),insertable=false,updatable=false)
 	private PacketSaleMembership packetSaleMembership;
 
 	public PacketSaleMembership getPacketSaleMembership() {
@@ -189,14 +185,7 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 		this.payComment = payComment;
 	}
 
-	public double getPacketPrice() {
-		return packetPrice;
-	}
-
-	public void setPacketPrice(double packetPrice) {
-		this.packetPrice = packetPrice;
-	}
-
+	
 	public String getSalesDateStr() {
 		return salesDateStr;
 	}
