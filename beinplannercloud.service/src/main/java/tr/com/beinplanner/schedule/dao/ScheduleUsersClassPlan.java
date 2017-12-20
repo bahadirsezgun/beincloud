@@ -1,10 +1,14 @@
 package tr.com.beinplanner.schedule.dao;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -37,7 +41,8 @@ public class ScheduleUsersClassPlan extends ScheduleFactory{
 	@Column(name="SALE_ID")
 	private long saleId;
 
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="USER_ID",foreignKey=@ForeignKey(foreignKeyDefinition="SUCP_TO_USER_FK"),insertable=false,updatable=false)
 	private User user;
 	
 	@Transient

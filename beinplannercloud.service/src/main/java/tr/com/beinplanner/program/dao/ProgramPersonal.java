@@ -35,6 +35,9 @@ public class ProgramPersonal extends ProgramFactory   {
 	@Column(name="PROG_ID")
 	private long 	progId;
 	
+	@Transient
+	private String type="pp";
+	
 	@Column(name="PROG_PRICE")
 	private double 	progPrice;
 

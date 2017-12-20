@@ -99,21 +99,21 @@ public class PacketPaymentService {
 		double leftPP=packetPaymentPersonals
 				.stream()
 				.mapToDouble(ppp->{
-								  double payment= ppp.getPacketSalePersonal().getPacketPrice()-ppp.getPayAmount();
+								  double payment= ppp.getPacketSaleFactory().getPacketPrice()-ppp.getPayAmount();
 								   return payment;
 							    }
 				).sum();
 		double leftPM=packetPaymentMemberships
 				.stream()
 				.mapToDouble(ppm->{
-								  double payment= ppm.getPacketSaleMembership().getPacketPrice()-ppm.getPayAmount();
+								  double payment= ppm.getPacketSaleFactory().getPacketPrice()-ppm.getPayAmount();
 								   return payment;
 							    }
 				).sum();
 		double leftPC=packetPaymentClasses
 				.stream()
 				.mapToDouble(ppc->{
-								  double payment= ppc.getPacketSaleClass().getPacketPrice()-ppc.getPayAmount();
+								  double payment= ppc.getPacketSaleFactory().getPacketPrice()-ppc.getPayAmount();
 								   return payment;
 							    }
 				).sum();

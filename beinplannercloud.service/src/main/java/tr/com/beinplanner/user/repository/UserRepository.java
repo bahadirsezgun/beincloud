@@ -15,9 +15,9 @@ import tr.com.beinplanner.user.dao.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-	List<User> findAllByFirmId(long firmId);
+	List<User> findAllByFirmId(int firmId);
 
-	List<User> findAllByFirmIdAndUserType(long firmId,long userType);
+	List<User> findAllByFirmIdAndUserType(int firmId,int userType);
 	
 	Optional<User> findByUserEmail(String userEmail);
 	

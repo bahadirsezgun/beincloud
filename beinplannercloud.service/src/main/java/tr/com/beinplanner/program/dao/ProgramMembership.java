@@ -34,6 +34,9 @@ public class ProgramMembership extends ProgramFactory {
 	@Column(name="PROG_ID")
 	private long 	progId;
 	
+	@Transient
+	private String type="pm";
+	
 	
 	@Column(name="PROG_NAME")
 	private String 	progName;

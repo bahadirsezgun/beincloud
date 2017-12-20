@@ -28,7 +28,7 @@ public class ProgramClass extends ProgramFactory  {
 
 	
 	@Transient
-	private String type;
+	private String type="pc";
 	
 	
 	@Id

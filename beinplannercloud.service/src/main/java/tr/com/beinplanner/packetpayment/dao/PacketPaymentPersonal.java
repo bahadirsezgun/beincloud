@@ -87,7 +87,7 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="SALE_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PPP_TO_PSP_FK"),insertable=false,updatable=false)
-	private PacketSalePersonal packetSalePersonal;
+	private PacketSalePersonal packetSaleFactory;
 
 	public long getPayId() {
 		return payId;
@@ -206,14 +206,16 @@ public class PacketPaymentPersonal extends PacketPaymentFactory {
 	public void setPacketPaymentPersonalDetails(List<PacketPaymentPersonalDetail> packetPaymentPersonalDetails) {
 		this.packetPaymentPersonalDetails = packetPaymentPersonalDetails;
 	}
-	
-	public PacketSalePersonal getPacketSalePersonal() {
-		return packetSalePersonal;
+
+	public PacketSalePersonal getPacketSaleFactory() {
+		return packetSaleFactory;
 	}
 
-	public void setPacketSalePersonal(PacketSalePersonal packetSalePersonal) {
-		this.packetSalePersonal = packetSalePersonal;
+	public void setPacketSaleFactory(PacketSalePersonal packetSaleFactory) {
+		this.packetSaleFactory = packetSaleFactory;
 	}
+	
+	
 	
 
 	

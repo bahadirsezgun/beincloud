@@ -90,7 +90,7 @@ public class PacketSaleClass extends PacketSaleFactory  {
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSC_TO_PC_FK"),insertable=false,updatable=false)
-	private ProgramClass programClass;
+	private ProgramClass programFactory;
 
 	
 	public int getProgCount() {
@@ -228,6 +228,14 @@ public class PacketSaleClass extends PacketSaleFactory  {
 
 	public void setProgType(String progType) {
 		this.progType = progType;
+	}
+
+	public ProgramClass getProgramFactory() {
+		return programFactory;
+	}
+
+	public void setProgramFactory(ProgramClass programFactory) {
+		this.programFactory = programFactory;
 	}
 	
 	

@@ -58,11 +58,11 @@ public class ScheduleTimePlan {
 	@JoinColumn(name="SCH_ID",foreignKey=@ForeignKey(foreignKeyDefinition="STP_TO_SP_FK"),insertable=false,updatable=false)
 	private SchedulePlan schedulePlan;
 	
-	@OneToMany(mappedBy="schtId",fetch=FetchType.LAZY)
-    private List<ScheduleUsersClassPlan>  scheduleUsersClassPlans;
+	@Transient
+	private List<ScheduleUsersClassPlan>  scheduleUsersClassPlans;
 	
-	@OneToMany(mappedBy="schtId",fetch=FetchType.LAZY)
-    private List<ScheduleUsersPersonalPlan>  scheduleUsersPersonalPlans;
+	@Transient
+	private List<ScheduleUsersPersonalPlan>  scheduleUsersPersonalPlans;
 	
 	
 	public List<ScheduleUsersClassPlan> getScheduleUsersClassPlans() {

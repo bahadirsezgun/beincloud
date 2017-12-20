@@ -105,7 +105,7 @@ public class PacketSalePersonal extends PacketSaleFactory {
 
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSP_TO_PP_FK"),insertable=false,updatable=false)
-	private ProgramPersonal programPersonal;
+	private ProgramPersonal programFactory;
 
 	
 	
@@ -230,13 +230,15 @@ public class PacketSalePersonal extends PacketSaleFactory {
 		this.progType = progType;
 	}
 
-	public ProgramPersonal getProgramPersonal() {
-		return programPersonal;
+	public ProgramPersonal getProgramFactory() {
+		return programFactory;
 	}
 
-	public void setProgramPersonal(ProgramPersonal programPersonal) {
-		this.programPersonal = programPersonal;
+	public void setProgramFactory(ProgramPersonal programFactory) {
+		this.programFactory = programFactory;
 	}
+
+	
 
 	
 	

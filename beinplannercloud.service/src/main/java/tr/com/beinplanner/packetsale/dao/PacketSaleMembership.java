@@ -100,7 +100,7 @@ public class PacketSaleMembership extends PacketSaleFactory {
 
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PSM_TO_PM_FK"),insertable=false,updatable=false)
-	private ProgramMembership programMembership;
+	private ProgramMembership programFactory;
 
 	
 	public long getSaleId() {
@@ -221,6 +221,14 @@ public class PacketSaleMembership extends PacketSaleFactory {
 
 	public void setProgType(String progType) {
 		this.progType = progType;
+	}
+
+	public ProgramMembership getProgramFactory() {
+		return programFactory;
+	}
+
+	public void setProgramFactory(ProgramMembership programFactory) {
+		this.programFactory = programFactory;
 	}
 
 	

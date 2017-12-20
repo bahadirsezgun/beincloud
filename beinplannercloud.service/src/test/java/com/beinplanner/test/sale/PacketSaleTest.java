@@ -54,18 +54,8 @@ public class PacketSaleTest {
 	
 	@Configuration
     static class ContextConfiguration {
-      /*
-		@Autowired
-		PacketSaleClassRepository packetSaleClassRepository;
-
-		@Autowired
-		PacketSalePersonalRepository packetSalePersonalRepository;
-		
-		@Autowired
-		PacketSaleMembershipRepository packetSaleMembershipRepository;
-		*/
-		// this bean will be injected into the OrderServiceTest class
-        @Bean
+       
+		 @Bean
         public PacketSaleService packetSaleService() {
         	PacketSaleService packetSaleService = new PacketSaleService();
             // set properties, etc.

@@ -7,5 +7,5 @@ import tr.com.beinplanner.schedule.dao.ScheduleMembershipTimePlan;
 
 @Repository
 public interface ScheduleMembershipTimePlanRepository  extends CrudRepository<ScheduleMembershipTimePlan, Long> {
-
+	
 }

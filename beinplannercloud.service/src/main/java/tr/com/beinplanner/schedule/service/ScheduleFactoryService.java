@@ -1,5 +1,6 @@
 package tr.com.beinplanner.schedule.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,19 @@ public class ScheduleFactoryService {
 	
 	
 	public List<ScheduleFactory> findScheduleUsersClassPlanBySchtId(long schtId){
-		return scheduleUsersClassPlanRepository.findBySchtId(schtId);
+		List<ScheduleFactory> scheduleFactories=new ArrayList<ScheduleFactory>();
+		
+		scheduleFactories.addAll(scheduleUsersClassPlanRepository.findBySchtId(schtId));
+		
+		return scheduleFactories;
 	}
 	
 	public List<ScheduleFactory> findScheduleUsersPersonalPlanBySchtId(long schtId){
-		return scheduleUsersPersonalPlanRepository.findBySchtId(schtId);
+		
+		List<ScheduleFactory> scheduleFactories=new ArrayList<ScheduleFactory>();
+		
+		scheduleFactories.addAll(scheduleUsersPersonalPlanRepository.findBySchtId(schtId));
+		
+		return scheduleFactories;
 	}
 }

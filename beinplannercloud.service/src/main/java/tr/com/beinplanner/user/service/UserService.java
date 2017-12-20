@@ -26,10 +26,10 @@ public class UserService  {
 	}
 	
 	
-	public List<User> findAllByFirmId(long firmId){
+	public List<User> findAllByFirmId(int firmId){
 		return userRepository.findAllByFirmId(firmId);
 	}
-	public List<User> findAllByFirmIdAndUserType(long firmId,long userType){
+	public List<User> findAllByFirmIdAndUserType(int firmId,int userType){
 		return userRepository.findAllByFirmIdAndUserType(firmId, userType);
 	}
 	

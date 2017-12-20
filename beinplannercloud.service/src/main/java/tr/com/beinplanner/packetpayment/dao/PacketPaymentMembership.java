@@ -95,15 +95,9 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="SALE_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PPM_TO_PSM_FK"),insertable=false,updatable=false)
-	private PacketSaleMembership packetSaleMembership;
+	private PacketSaleMembership packetSaleFactory;
 
-	public PacketSaleMembership getPacketSaleMembership() {
-		return packetSaleMembership;
-	}
-
-	public void setPacketSaleMembership(PacketSaleMembership packetSaleMembership) {
-		this.packetSaleMembership = packetSaleMembership;
-	}
+	
 
 	public long getPayId() {
 		return payId;
@@ -211,6 +205,14 @@ public class PacketPaymentMembership extends PacketPaymentFactory {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public PacketSaleMembership getPacketSaleFactory() {
+		return packetSaleFactory;
+	}
+
+	public void setPacketSaleFactory(PacketSaleMembership packetSaleFactory) {
+		this.packetSaleFactory = packetSaleFactory;
 	}
 	
 

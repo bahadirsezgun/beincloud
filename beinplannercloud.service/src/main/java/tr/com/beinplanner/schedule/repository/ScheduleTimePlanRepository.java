@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import tr.com.beinplanner.schedule.dao.ScheduleMembershipTimePlan;
 import tr.com.beinplanner.schedule.dao.ScheduleTimePlan;
 
 @Repository
@@ -17,9 +18,9 @@ public interface ScheduleTimePlanRepository  extends CrudRepository<ScheduleTime
 	
 	@Query(value="SELECT a.SCHT_ID,d.PROG_ID,d.PROG_NAME,c.SCH_COUNT,a.STATUTP ,a.PLAN_START_DATE,a.PLAN_END_DATE,a.SCH_ID,a.SCHT_STAFF_ID,a.TP_COMMENT" + 
 			"				  FROM 	schedule_time_plan a,  " + 
-			"							schedule_users_class_plan b, " + 
-			"				         schedule_plan c, " + 
-			"				         program_class d  " + 
+			"						schedule_users_class_plan b, " + 
+			"				        schedule_plan c, " + 
+			"				        program_class d  " + 
 			"					 WHERE a.SCHT_STAFF_ID=:schStaffId " + 
 			"					   AND a.SCHT_ID=b.SCHT_ID " + 
 			"					   AND a.PLAN_START_DATE>=:startDate " + 
@@ -33,9 +34,9 @@ public interface ScheduleTimePlanRepository  extends CrudRepository<ScheduleTime
 
 	@Query(value="SELECT a.SCHT_ID,d.PROG_ID,d.PROG_NAME,c.SCH_COUNT,a.STATUTP,a.PLAN_START_DATE,a.PLAN_END_DATE,a.SCH_ID,a.SCHT_STAFF_ID,a.TP_COMMENT" + 
 			"				  FROM 	schedule_time_plan a,  " + 
-			"							schedule_users_personal_plan b, " + 
-			"				         schedule_plan c, " + 
-			"				         program_personal d  " + 
+			"						schedule_users_personal_plan b, " + 
+			"				        schedule_plan c, " + 
+			"				        program_personal d  " + 
 			"					 WHERE a.SCHT_STAFF_ID=:schStaffId " + 
 			"					   AND a.SCHT_ID=b.SCHT_ID " + 
 			"					   AND a.PLAN_START_DATE>=:startDate " + 
@@ -47,4 +48,21 @@ public interface ScheduleTimePlanRepository  extends CrudRepository<ScheduleTime
 	public List<ScheduleTimePlan> findScheduleTimePlansPersonalPlanByDatesForStaff(@Param("schStaffId") long schStaffId,@Param("startDate") Date startDate,@Param("endDate") Date endDate);
 	
 	
+	
+	@Query(value="SELECT a.* "
+			+ "  FROM schedule_time_plan a " + 
+			"						 WHERE a.PLAN_START_DATE>=:startDate " + 
+			"						and a.PLAN_START_DATE<:endDate AND a.SCHT_ID IN "
+			+ "                      (SELECT SCHT_ID FROM schedule_users_class_plan "
+			+ "                         WHERE USER_ID IN (SELECT USER_ID FROM user WHERE FIRM_ID=:firmId))",nativeQuery=true)
+	public List<ScheduleTimePlan> findLastOfClassesForClass(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
+
+	@Query(value="SELECT a.* "
+			+ "  FROM schedule_time_plan a " + 
+			"						 WHERE a.PLAN_START_DATE>=:startDate " + 
+			"						and a.PLAN_START_DATE<:endDate AND a.SCHT_ID IN "
+			+ "                      (SELECT SCHT_ID FROM schedule_users_personal_plan "
+			+ "                         WHERE USER_ID IN (SELECT USER_ID FROM user WHERE FIRM_ID=:firmId))",nativeQuery=true)
+	public List<ScheduleTimePlan> findLastOfClassesForPersonal(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
+
 }

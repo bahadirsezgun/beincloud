@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 @Entity
 @Table(name="schedule_membership_plan")
-public class ScheduleMembershipPlan {
+public class ScheduleMembershipPlan extends ScheduleFactory {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
