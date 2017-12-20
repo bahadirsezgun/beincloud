@@ -39,11 +39,11 @@ ptBossApp.controller('DashboardController', function($rootScope,$scope,$translat
 	function findGlobals(){
 		if($rootScope.ptGlobal!=null){
 		
-		$scope.ptTz=$rootScope.ptGlobal.ptTz;
-		$scope.ptCurrency=$rootScope.ptGlobal.ptCurrency;
-		$scope.ptStaticIp=$rootScope.ptGlobal.ptStaticIp;
-		$scope.ptLang=($rootScope.ptGlobal.ptLang).substring(0,2);
-		$scope.ptDateFormat=$rootScope.ptGlobal.ptScrDateFormat;
+		$scope.ptTz=commonService.ptGlobal.ptTz;
+		$scope.ptCurrency=commonService.ptGlobal.ptCurrency;
+		$scope.ptStaticIp=commonService.ptGlobal.ptStaticIp;
+		$scope.ptLang=(commonService.ptGlobal.ptLang).substring(0,2);
+		$scope.ptDateFormat=commonService.ptGlobal.ptScrDateFormat;
 		
 		$translate.use($scope.ptLang);
 		$translate.refresh;

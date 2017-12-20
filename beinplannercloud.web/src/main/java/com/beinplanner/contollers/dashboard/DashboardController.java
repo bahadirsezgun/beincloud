@@ -23,15 +23,18 @@ import tr.com.beinplanner.income.dao.PastIncomeMonthTbl;
 import tr.com.beinplanner.income.dao.PtExpenses;
 import tr.com.beinplanner.income.service.PtExpensesService;
 import tr.com.beinplanner.login.session.LoginSession;
+import tr.com.beinplanner.packetpayment.dao.PacketPaymentFactory;
 import tr.com.beinplanner.packetpayment.service.PacketPaymentService;
 import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
 import tr.com.beinplanner.packetsale.service.PacketSaleService;
 import tr.com.beinplanner.result.HmiResultObj;
 import tr.com.beinplanner.schedule.service.ScheduleService;
+import tr.com.beinplanner.user.dao.User;
 import tr.com.beinplanner.user.repository.UserRepository;
 import tr.com.beinplanner.user.service.UserService;
 import tr.com.beinplanner.util.DateTimeUtil;
 import tr.com.beinplanner.util.OhbeUtil;
+import tr.com.beinplanner.util.UserTypes;
 
 @RestController
 @RequestMapping("/bein/dashboard")
@@ -206,10 +209,32 @@ public class DashboardController {
 	
 	@PostMapping(value="/getPacketPayments")
 	public  @ResponseBody HmiResultObj getPacketPayments() {
-		List<PacketSaleFactory> packetSaleFactories=packetSaleService.findLast5PacketSales(loginSession.getUser().getFirmId());
-		
+		List<PacketPaymentFactory> packetPaymentFactories=packetPaymentService.findLast5packetPayments(loginSession.getUser().getFirmId());
+		/*
+		packetPaymentFactories.forEach(ppf->{
+			if(ppf instanceof PacketPaymentPersonal) {
+				((PacketPaymentPersonal)ppf).setPayDateStr(DateTimeUtil.getDateStrByFormat(((PacketPaymentPersonal)ppf).getPayDate(), loginSession.getPtGlobal().getPtDbDateFormat()));
+			}else if(ppf instanceof PacketPaymentClass) {
+				((PacketPaymentClass)ppf).setPayDateStr(DateTimeUtil.getDateStrByFormat(((PacketPaymentClass)ppf).getPayDate(), loginSession.getPtGlobal().getPtDbDateFormat()));
+			}else if(ppf instanceof PacketPaymentMembership) {
+				((PacketPaymentMembership)ppf).setPayDateStr(DateTimeUtil.getDateStrByFormat(((PacketPaymentMembership)ppf).getPayDate(), loginSession.getPtGlobal().getPtDbDateFormat()));
+			}
+		});*/
 		HmiResultObj hmiResultObj=new HmiResultObj();
-		hmiResultObj.setResultObj(packetSaleFactories);
+		hmiResultObj.setResultObj(packetPaymentFactories);
 		return hmiResultObj;
+	}
+	
+	@PostMapping(value="/findTotalMemberInSystem")
+	public  @ResponseBody int findTotalMemberInSystem() {
+		List<User> users=userService.findAllByFirmIdAndUserType(loginSession.getUser().getFirmId(), UserTypes.USER_TYPE_MEMBER_INT);
+		return users.size();
+	}
+	
+	
+	@PostMapping(value="/lastOfClasses")
+	public  @ResponseBody int lastOfClasses() {
+		List<User> users=userService.findAllByFirmIdAndUserType(loginSession.getUser().getFirmId(), UserTypes.USER_TYPE_MEMBER_INT);
+		return users.size();
 	}
 }

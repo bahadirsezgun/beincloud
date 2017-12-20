@@ -4,29 +4,30 @@ ptBossApp.factory("commonService",function($rootScope){
 	sharedService.search;
 	sharedService.searchBoxPH;
 	
-	$rootScope.ptGlobal=null;
-	$rootScope.user=null;
+	sharedService.ptGlobal=null;
+	sharedService.user=null;
 	
 	sharedService.setPtGlobal=function(global){
 		
-		$rootScope.ptGlobal=new Object();
-		$rootScope.ptGlobal.ptTz=global.ptTz;
-		$rootScope.ptGlobal.ptCurrency=global.ptCurrency;
-		$rootScope.ptGlobal.ptStaticIp=global.ptStaticIp;
-		$rootScope.ptGlobal.ptLang=(global.ptLang).substring(0,2);
-		$rootScope.ptGlobal.ptDateFormat=global.ptScrDateFormat;
+		sharedService.ptGlobal=new Object();
+		sharedService.ptGlobal.ptTz=global.ptTz;
+		sharedService.ptGlobal.ptCurrency=global.ptCurrency;
+		sharedService.ptGlobal.ptStaticIp=global.ptStaticIp;
+		sharedService.ptGlobal.ptLang=(global.ptLang).substring(0,2);
+		sharedService.ptGlobal.ptDateFormat=global.ptScrDateFormat;
+		
 	}
 	
 	sharedService.getPtGlobal=function(){
 		if(sharedService.ptGlobal==null){
 			return null;
 		}else{
-			return $rootScope.ptGlobal;
+			return sharedService.ptGlobal;
 		}
 	}
 	
 	sharedService.setUser=function(user){
-		$rootScope.user=user;
+		sharedService.user=user;
 	}
 	
 	

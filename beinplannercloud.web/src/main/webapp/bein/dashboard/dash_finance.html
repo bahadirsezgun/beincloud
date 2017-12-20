@@ -511,10 +511,10 @@
 								<tr ng-repeat="ps in packetSales | orderBy : 'salesDate':true">
 									<td>{{ps.progName}}</td>
 									<td>{{ps.progType=='psp'?('packetSalePersonal'|translate):(ps.progType=='psc'?('packetSaleClass'|translate):('packetSaleMembership'|translate) )}} <br /> <small><i
-											class="fa fa-clock-o"></i> {{('createdDate'|translate)+" "+ps.changeDateStr}}</small>
+											class="fa fa-clock-o"></i> {{('createdDate'|translate)+" "+(ps.changeDate|date:dateFormat)}}</small>
 									</td>
 									<td><span class="pie">{{ps.user.userName+" "+ps.user.userSurname}}</span></td>
-									<td><strong>{{ps.salesDateStr}}</strong></td>
+									<td><strong>{{ps.salesDate| date : dateFormat}}</strong></td>
 									<td><a href=""><i class="fa fa-check {{ps.complete==1?'text-success':'text-danger'}} "></i></a></td>
 								</tr>
 								
@@ -537,7 +537,7 @@
 							<h3 class="no-margins font-extra-bold text-success">{{pu.userName+" "+pu.userSurname}}</h3>
 							<small>{{pu.userGsm}}</small>
 							<div class="pull-right font-bold">
-								{{pu.userBirthdayStr}} <i class="fa fa-clock text-success"></i>
+								{{pu.userBirthday|date:dateFormat}} <i class="fa fa-clock text-success"></i>
 							</div>
 						</div>
 						
@@ -557,7 +557,11 @@
 					<div class="list-item-container-fluid">
 						<div class="list-item" ng-repeat="lp in packetPayments |orderBy : payDate:true">
 							<h3 class="no-margins font-extra-bold text-success">{{(lp.payAmount |currency:"":2)+" "+ptCurrency}}</h3>
-							<small class="pull-right">{{lp.payDateStr}}</small>
+							<small>{{lp.packetSaleFactory.programFactory.progName}}</small>
+							<small class="pull-right">{{lp.payDate | date : dateFormat}}</small>
+							<br>
+							<small>{{lp.packetSaleFactory.user.userName}}</small><small>{{lp.packetSaleFactory.user.userSurname}}</small>
+							
 							
 						</div>
 						

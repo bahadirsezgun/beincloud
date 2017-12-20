@@ -1,4 +1,4 @@
-ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$translate,homerService,commonService) {
+ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$translate,homerService,commonService,$http) {
 	
 	$scope.tokenClass="150";
 	$scope.monthName="may";
@@ -7,6 +7,9 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	$scope.lastUpdateDate="10/05/2017";
 	$scope.messageText="You have two new messages from Monica Bolt";
 	$scope.week="";
+	
+	$scope.dateFormat=commonService.ptGlobal.ptDateFormat;
+	$scope.dateTimeFormat=commonService.ptGlobal.ptDateTimeFormat;
 	
 	$scope.activeMemberCount=""; //Aktif Üye Sayısı
 	$scope.updateVersion=""; //Aktif Üye Sayısı
@@ -133,9 +136,10 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		    getTodayPayments();
 		    getSaledPackets();
 		    getPacketPayments();
+		    findTotalMemberInSystem();
 		    /*
 			loggedInUser();
-		    findTotalMemberInSystem();
+		    
 					
 		  			findPastForYearCount();
 		  			findSpecialDates();
@@ -174,13 +178,14 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 				    getTodayPayments();
 				    getSaledPackets();
 				    getPacketPayments();
+				    findTotalMemberInSystem();
 				    /*
 				    
 				    
 					
 					
 					
-					findTotalMemberInSystem();
+					
 					
 		  			findPastForYearCount();
 		  			findSpecialDates();
@@ -204,18 +209,12 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	
 	
 	function lastClasses(){
-		$.ajax({
-	  		  type:'POST',
-	  		  url: "../pt/dashboard/lastOfClasses",
-	  		  contentType: "application/json; charset=utf-8",				    
-	  		  dataType: 'json', 
-	  		  cache:false
-	  		}).done(function(res) {
-	  			$scope.lastOfClasses=res;
-	  			
-	  			console.log(res);
-	  			
-	  			var cotwPC=res.stpTW.length;
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/lastOfClasses"
+			}).then(function successCallback(response) {
+				$scope.lastOfClasses=response.data.resultObj;
+				var cotwPC=res.stpTW.length;
 	  			var cotwM=res.stpMTW.length;
 	  			var cotnwPC=res.stpNW.length;
 	  			var cotnwM=res.stpMNW.length;
@@ -223,8 +222,12 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	  			$scope.lastOfCountThisWeek=parseInt(cotwPC)+parseInt(cotwM);
 	  			$scope.lastOfCountNextWeek=parseInt(cotnwPC)+parseInt(cotnwM);
 	  			$scope.totalOfLastCount=$scope.lastOfCountThisWeek+$scope.lastOfCountNextWeek;
-	  			$scope.$apply();
-	  		});
+				
+				
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			});
 	}
 	
 	$scope.showLastClassDetail=function(){
@@ -234,108 +237,91 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	}
 	
 	function findTotalMemberInSystem(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/dashboard/findTotalMemberInSystem",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.totalMemberCount=res;
-				console.log("$scope.totalMemberCount : "+$scope.totalMemberCount);
-				$scope.$apply();
-			});
 		
+		$http({
+			  method: 'POST',
+			  url: '/bein/dashboard/findTotalMemberInSystem'
+			}).then(function successCallback(response) {
+				$scope.totalMemberCount=response.data;
+			  }, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 	}
 	
 	function getActiveMembers(){
 		
-		$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/activeMembers",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.activeMemberCount=res.resultObj.activeMemberCount;
-				$scope.$apply();
-			});
 		
+		$http({
+			  method: 'POST',
+			  url: '/bein/dashboard/activeMembers'
+			}).then(function successCallback(response) {
+				$scope.activeMemberCount=response.data.resultObj.activeMemberCount;
+			  }, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 	}
 	
-
-	
-   
-   
-   
-   
-   
    $scope.todayPayment;
    
    function getTodayPayments(){
-		
-		$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/todayIncomeExpense",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.todayPayment=res.resultObj;
-				$scope.$apply();
+	   	$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/todayIncomeExpense"
+			}).then(function successCallback(response) {
+				$scope.todayPayment=response.data.resultObj;
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
+		
 		
 	}
 	
    
     
    function getPacketPayments(){
-		
-		$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/getPacketPayments",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.packetPayments=res;
-				$scope.$apply();
+	   $http({
+			  method: 'POST',
+			  url: "/bein/dashboard/getPacketPayments"
+			}).then(function successCallback(response) {
+				$scope.packetPayments=response.data.resultObj;
 				todayInlineChart();
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
-		
 	}
    
    
    
     function getSaledPackets(){
-    	
-    	$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/getPacketSales",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.packetSales=res.resultObj;
-				$scope.$apply();
+    	     $http({
+			  method: 'POST',
+			  url: "/bein/dashboard/getPacketSales"
+			}).then(function successCallback(response) {
+				$scope.packetSales=response.data.resultObj;
+				
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
-    	
-    }
+	}
    
    
    function getLeftPayments(){
-		
-		$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/leftPayments",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.leftPaymentInfo=res.resultObj;
-				$scope.$apply();
-			});
-		
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/leftPayments"
+			}).then(function successCallback(response) {
+				$scope.leftPaymentInfo=response.data.resultObj;
+				
+				
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 	}
     
 	$scope.lastMonthName;
@@ -349,93 +335,86 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	$scope.thisYearIncome=0;
 	
 	function findPastForYear(){
-		$.ajax({
-			  type:'POST',
+		
+		
+		$http({
+			  method: 'POST',
 			  url: "/bein/dashboard/findPastForYear/"+$scope.year,
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
+			}).then(function successCallback(response) {
 				$scope.lastMonthName=0;
-		    	$scope.lastMonthEarn=0;
-		    	$scope.lastMonthIncome=0;
-		    	$scope.lastMonthExpense=0;
-		    	$scope.thisYearEarn=0;
-		    	$scope.thisYearExpense=0;
-		    	$scope.thisYearIncome=0;
-		    	
-				$scope.incomes=res.resultObj;
-				var maxEarn=0;
-				$.each($scope.incomes,function(i,income){
-				    if($scope.month==1){
-				    	$scope.lastMonthName=$scope.incomes[i].pimMonthName;
-				    	$scope.lastMonthEarn=$scope.incomes[i].totalEarn;
-				    	$scope.lastMonthIncome=$scope.incomes[i].totalIncome;
-				    	$scope.lastMonthExpense=$scope.incomes[i].totalExpense;
-				    	
-				    }else if(income.pimMonth==$scope.month){
-				    	$scope.lastMonthName=$scope.incomes[i-1].pimMonthName;
-				    	$scope.lastMonthEarn=$scope.incomes[i-1].totalEarn;
-				    	$scope.lastMonthIncome=$scope.incomes[i-1].totalIncome;
-				    	$scope.lastMonthExpense=$scope.incomes[i-1].totalExpense;
-				    	
-					}
-				    
-				    $scope.thisYearExpense=$scope.thisYearExpense+income.totalExpense;
-			    	$scope.thisYearIncome=$scope.thisYearIncome+income.totalIncome;
-				    
-				    if(maxEarn<$scope.lastMonthEarn){
-				    	maxEarn=$scope.lastMonthEarn;
-				    }
-				    
-				   
-				    	
-				    
-				});
-				
-				$scope.thisYearEarn=$scope.thisYearIncome-$scope.thisYearExpense;
-		    	
-				 if(maxEarn!=0){
-				    	$scope.lastMonthEarnRate=$scope.lastMonthEarn/maxEarn;
-				 }else{
-					 $scope.lastMonthEarnRate=0;
-				 }
-				 findPrevForYear();
-				$scope.$apply();
-				getDataToGraph();
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) {
-				$scope.$apply();
-			});
+			    	$scope.lastMonthEarn=0;
+			    	$scope.lastMonthIncome=0;
+			    	$scope.lastMonthExpense=0;
+			    	$scope.thisYearEarn=0;
+			    	$scope.thisYearExpense=0;
+			    	$scope.thisYearIncome=0;
+			    	
+			    	$scope.incomes=response.data.resultObj;
+			    	var maxEarn=0;
+					$.each($scope.incomes,function(i,income){
+					    if($scope.month==1){
+					    	$scope.lastMonthName=$scope.incomes[i].pimMonthName;
+					    	$scope.lastMonthEarn=$scope.incomes[i].totalEarn;
+					    	$scope.lastMonthIncome=$scope.incomes[i].totalIncome;
+					    	$scope.lastMonthExpense=$scope.incomes[i].totalExpense;
+					    	
+					    }else if(income.pimMonth==$scope.month){
+					    	$scope.lastMonthName=$scope.incomes[i-1].pimMonthName;
+					    	$scope.lastMonthEarn=$scope.incomes[i-1].totalEarn;
+					    	$scope.lastMonthIncome=$scope.incomes[i-1].totalIncome;
+					    	$scope.lastMonthExpense=$scope.incomes[i-1].totalExpense;
+					    	
+						}
+					    
+					    $scope.thisYearExpense=$scope.thisYearExpense+income.totalExpense;
+				    		$scope.thisYearIncome=$scope.thisYearIncome+income.totalIncome;
+					    
+					    if(maxEarn<$scope.lastMonthEarn){
+					    	maxEarn=$scope.lastMonthEarn;
+					    }
+					});
+					$scope.thisYearEarn=$scope.thisYearIncome-$scope.thisYearExpense;
+			    	
+					 if(maxEarn!=0){
+					    	$scope.lastMonthEarnRate=$scope.lastMonthEarn/maxEarn;
+					 }else{
+						 $scope.lastMonthEarnRate=0;
+					 }
+					 findPrevForYear();
+					 getDataToGraph();
+					 
+			  }, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
+		
+		
+		
+		
 	}
 	
 	
 	function findPrevForYear(){
-		
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/findPastForYear/"+$scope.prevYear
+			}).then(function successCallback(response) {
+				$scope.prevIncomes=response.data.resultObj;
+				
+				
+			    if($scope.month==1){
+			    	$scope.lastMonthName=$scope.prevIncomes[12].pimMonthName;
+			    	$scope.lastMonthEarn=$scope.prevIncomes[12].totalEarn;
+			    	$scope.lastMonthIncome=$scope.prevIncomes[12].totalIncome;
+			    	$scope.lastMonthExpense=$scope.prevIncomes[12].totalExpense;
+			    	
+			    }
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 	
-		$.ajax({
-			  type:'POST',
-			  url: "/bein/dashboard/findPastForYear/"+$scope.prevYear,
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.prevIncomes=res.resultObj;
-				
-			
-				    if($scope.month==1){
-				    	$scope.lastMonthName=$scope.prevIncomes[12].pimMonthName;
-				    	$scope.lastMonthEarn=$scope.prevIncomes[12].totalEarn;
-				    	$scope.lastMonthIncome=$scope.prevIncomes[12].totalIncome;
-				    	$scope.lastMonthExpense=$scope.prevIncomes[12].totalExpense;
-				    	
-				    }
-				
-				    $scope.$apply();
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) {
-				$scope.$apply();
-			});
+		
 	}
 	
 	
