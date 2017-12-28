@@ -6,23 +6,17 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
-import tr.com.beinplanner.schedule.service.ScheduleService;
 import tr.com.beinplanner.user.dao.User;
 @Entity
 @Table(name="schedule_time_plan")
@@ -53,10 +47,11 @@ public class ScheduleTimePlan {
 	@Column(name="TP_COMMENT")
 	private String tpComment;
 	
-	
+	@JsonIgnore
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="SCH_ID",foreignKey=@ForeignKey(foreignKeyDefinition="STP_TO_SP_FK"),insertable=false,updatable=false)
 	private SchedulePlan schedulePlan;
+	
 	
 	@Transient
 	private List<ScheduleUsersClassPlan>  scheduleUsersClassPlans;
@@ -123,6 +118,7 @@ public class ScheduleTimePlan {
 	@Transient
 	private String sequence ;
 	
+	@JsonIgnore
 	@Transient
 	private List<ScheduleFactory> users;
 	

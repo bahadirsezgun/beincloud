@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 @Entity
@@ -32,6 +34,7 @@ public class User implements Cloneable {
 	@Column(name="USER_SURNAME")
 	private String userSurname;
 
+	@JsonIgnore
 	@Column(name="PASSWORD")
 	private String password;
 

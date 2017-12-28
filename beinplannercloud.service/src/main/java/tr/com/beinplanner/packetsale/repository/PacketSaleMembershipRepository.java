@@ -24,5 +24,6 @@ public interface PacketSaleMembershipRepository extends CrudRepository<PacketSal
 			+ "              ORDER BY  SALES_DATE DESC "
 			+ "              LIMIT 5 ",nativeQuery=true )
 	public List<PacketSaleMembership> findLast5PacketSales(@Param("firmId") int firmId);
+
 	
 }

@@ -55,7 +55,7 @@ public interface ScheduleTimePlanRepository  extends CrudRepository<ScheduleTime
 			"						and a.PLAN_START_DATE<:endDate AND a.SCHT_ID IN "
 			+ "                      (SELECT SCHT_ID FROM schedule_users_class_plan "
 			+ "                         WHERE USER_ID IN (SELECT USER_ID FROM user WHERE FIRM_ID=:firmId))",nativeQuery=true)
-	public List<ScheduleTimePlan> findLastOfClassesForClass(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
+	public List<ScheduleTimePlan> findClassesForClass(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
 
 	@Query(value="SELECT a.* "
 			+ "  FROM schedule_time_plan a " + 
@@ -63,6 +63,14 @@ public interface ScheduleTimePlanRepository  extends CrudRepository<ScheduleTime
 			"						and a.PLAN_START_DATE<:endDate AND a.SCHT_ID IN "
 			+ "                      (SELECT SCHT_ID FROM schedule_users_personal_plan "
 			+ "                         WHERE USER_ID IN (SELECT USER_ID FROM user WHERE FIRM_ID=:firmId))",nativeQuery=true)
-	public List<ScheduleTimePlan> findLastOfClassesForPersonal(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
+	public List<ScheduleTimePlan> findClassesForPersonal(@Param ("startDate") Date startDate,@Param ("endDate") Date endDate,@Param ("firmId") int firmId );
 
+	
+	
+	
+		
+	
+	
+	
+	
 }

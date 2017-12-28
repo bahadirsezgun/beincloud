@@ -51,8 +51,6 @@ public class ScheduleMembershipPlan extends ScheduleFactory {
 	@Column(name="SMP_COMMENT")
 	private String smpComment;
 	
-	@Column(name="FIRM_ID")
-	private int firmId;
 	
 	@Transient
 	private String smpStartDayName;
@@ -173,14 +171,7 @@ public class ScheduleMembershipPlan extends ScheduleFactory {
 	}
 
 
-	public int getFirmId() {
-		return firmId;
-	}
-
-
-	public void setFirmId(int firmId) {
-		this.firmId = firmId;
-	}
+	
 
 
 	public String getSmpStartDayName() {

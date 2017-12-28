@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import tr.com.beinplanner.settings.dao.PtGlobal;
 import tr.com.beinplanner.settings.dao.PtRules;
 import tr.com.beinplanner.user.dao.User;
-import tr.com.beinplanner.user.service.UserSecurityService;
 /**
  * 
  * @author Bahadir Sezgun

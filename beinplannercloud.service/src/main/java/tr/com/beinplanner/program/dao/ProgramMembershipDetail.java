@@ -31,9 +31,6 @@ public class ProgramMembershipDetail {
 	@Column(name="PROG_RESTRICTED_TIME")
 	private int progRestrictedTime;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="PROG_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PMD_TO_PM_FK"),insertable=false,updatable=false)
-	private ProgramMembership programMembership;
 	
 	
 	public int getProgRestrictedDay() {
@@ -48,12 +45,7 @@ public class ProgramMembershipDetail {
 	public void setProgRestrictedTime(int progRestrictedTime) {
 		this.progRestrictedTime = progRestrictedTime;
 	}
-	public ProgramMembership getProgramMembership() {
-		return programMembership;
-	}
-	public void setProgramMembership(ProgramMembership programMembership) {
-		this.programMembership = programMembership;
-	}
+
 	public long getProgDetId() {
 		return progDetId;
 	}

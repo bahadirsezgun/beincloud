@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tr.com.beinplanner.definition.dao.DefFirm;
@@ -70,6 +71,7 @@ public class ProgramPersonal extends ProgramFactory   {
 	@Column(name="PROG_COMMENT")
 	private String 	progComment;
 
+	@JsonIgnore
 	@Column(name="FIRM_ID")
 	private int 	firmId;
 
@@ -97,8 +99,8 @@ public class ProgramPersonal extends ProgramFactory   {
 	@Column(name="REST_DURATION")
 	private int 	restDuration;
 
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="FIRM_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PRP_TO_DF_FK"),insertable=false,updatable=false)
+	@ManyToOne
+	@JoinColumn(name="FIRM_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PP_TO_DF_FK"),insertable=false,updatable=false)
 	private DefFirm defFirm;
 
 	

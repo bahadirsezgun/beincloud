@@ -98,12 +98,12 @@ public class ProgramMembership extends ProgramFactory {
 	
 	
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="FIRM_ID",foreignKey=@ForeignKey(foreignKeyDefinition="PRP_TO_DF_FK"),insertable=false,updatable=false)
 	private DefFirm defFirm;
 
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="progId")
-	private List<ProgramMembershipDetail> programMembershipDetail;
+	@OneToMany(mappedBy="progId")
+	private List<ProgramMembershipDetail> programMembershipDetails;
 
 
 	
@@ -338,5 +338,33 @@ public class ProgramMembership extends ProgramFactory {
 	public void setProgId(long progId) {
 		this.progId = progId;
 	}
+
+
+
+	public String getType() {
+		return type;
+	}
+
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+
+	public List<ProgramMembershipDetail> getProgramMembershipDetails() {
+		return programMembershipDetails;
+	}
+
+
+
+	public void setProgramMembershipDetails(List<ProgramMembershipDetail> programMembershipDetails) {
+		this.programMembershipDetails = programMembershipDetails;
+	}
+
+
+
+	
 	
 }

@@ -17,13 +17,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.databind.deser.CreatorProperty;
-
 import tr.com.beinplanner.definition.dao.DefFirm;
 import tr.com.beinplanner.program.dao.ProgramMembership;
 import tr.com.beinplanner.program.dao.ProgramMembershipDetail;
 import tr.com.beinplanner.program.dao.ProgramPersonal;
 import tr.com.beinplanner.program.service.ProgramService;
+import tr.com.beinplanner.result.HmiResultObj;
 import tr.com.beinplanner.util.ProgDurationTypes;
 import tr.com.beinplanner.util.RestrictionUtil;
 import tr.com.beinplanner.util.StatuTypes;
@@ -65,17 +64,17 @@ public class ProgramTest {
 	
 	private ProgramMembership getProgramMembership() {
 		ProgramMembership programMembership=new ProgramMembership();
-		programMembership.setProgId(1);
+		programMembership.setProgId(14);
 		programMembership.setFirmId(1);
 		programMembership.setFreezeDuration(1);
 		programMembership.setFreezeDurationType(ProgDurationTypes.DURATION_TYPE_WEEKLY);
 		programMembership.setMaxFreezeCount(3);
-		programMembership.setProgComment("TEST VERİSİ");
+		programMembership.setProgComment("TEST 3 VERİSİ");
 		programMembership.setProgDescription("TEST ICIN HAZIRLANMIŞ PROGRAM");
 		programMembership.setProgDuration(1);
 		programMembership.setProgDurationType(ProgDurationTypes.DURATION_TYPE_MONTHLY);
 		programMembership.setProgIcon("-");
-		programMembership.setProgName("1 AYLIK (TEST)"); 
+		programMembership.setProgName("1 YILLIK (TEST)"); 
 		programMembership.setProgPrice(1000D);
 		programMembership.setProgRestriction(RestrictionUtil.RESTIRICTION_FLAG_NO);
 		programMembership.setProgStatus(StatuTypes.PASSIVE);
@@ -85,17 +84,17 @@ public class ProgramTest {
 		
 		ProgramMembershipDetail pmd1=new ProgramMembershipDetail();
 		pmd1.setProgRestrictedDay(1);
-		pmd1.setProgRestrictedTime(0);
+		pmd1.setProgRestrictedTime(1);
 		
 		programMembershipDetails.add(pmd1);
-		
+		/*
 		ProgramMembershipDetail pmd2=new ProgramMembershipDetail();
 		pmd2.setProgRestrictedDay(2);
-		pmd2.setProgRestrictedTime(0);
+		pmd2.setProgRestrictedTime(2);
 		
 		programMembershipDetails.add(pmd2);
-		
-		
+		*/
+		programMembership.setProgramMembershipDetails(programMembershipDetails);
 		
 		return programMembership;
 	}
@@ -105,7 +104,7 @@ public class ProgramTest {
 	public void findMembershipProgramById() {
 		
 		ProgramMembership programMembership=getProgramMembership();
-		programMembership=programService.createProgramMembershipById(programMembership);
+		programService.createProgramMembership(programMembership);
 		System.out.println("PROG ID IS "+programMembership.getProgId());
 		ProgramMembership programMembershipInDb=programService.findProgramMembershipById(programMembership.getProgId());
 		assertTrue(programMembershipInDb!=null);
@@ -115,4 +114,24 @@ public class ProgramTest {
 		assertTrue(defFirm!=null);
 		
 	}
+	
+	
+	@Test
+	public void createProgramMembership() {
+		ProgramMembership programMembership=getProgramMembership();
+		HmiResultObj hmiResultObj=programService.createProgramMembership(programMembership);
+		ProgramMembership pm=(ProgramMembership)hmiResultObj.getResultObj();
+		
+		programMembership.getProgramMembershipDetails().forEach(pmd->{
+			pmd.setProgId(pm.getProgId());
+		});
+		
+		programService.createProgramMembershipDetails(programMembership.getProgramMembershipDetails(), pm.getProgId());
+		
+		programMembership.getProgramMembershipDetails().forEach(pmd->{
+			System.out.println(pmd.getProgDetId());
+		});
+	}
+	
+	
 }

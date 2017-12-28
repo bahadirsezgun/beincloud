@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import tr.com.beinplanner.schedule.businessEntity.ScheduleTimeObj;
 import tr.com.beinplanner.user.dao.User;
 

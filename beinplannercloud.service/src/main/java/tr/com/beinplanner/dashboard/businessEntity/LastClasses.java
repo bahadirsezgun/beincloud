@@ -5,8 +5,9 @@ import java.util.List;
 import tr.com.beinplanner.schedule.dao.ScheduleMembershipPlan;
 import tr.com.beinplanner.schedule.dao.ScheduleTimePlan;
 
-public class LastClasses {
+public class LastClasses{
 
+	
 	private List<ScheduleTimePlan> stpTW;
 	private List<ScheduleTimePlan> stpNW;
 	
@@ -37,6 +38,7 @@ public class LastClasses {
 	public void setStpMNW(List<ScheduleMembershipPlan> stpMNW) {
 		this.stpMNW = stpMNW;
 	}
+	
 	
 	
 }

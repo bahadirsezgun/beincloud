@@ -8,16 +8,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import tr.com.beinplanner.dashboard.businessEntity.LastClasses;
+import tr.com.beinplanner.dashboard.businessEntity.PlannedClassInfo;
 import tr.com.beinplanner.schedule.dao.ScheduleMembershipPlan;
+import tr.com.beinplanner.schedule.dao.ScheduleMembershipTimePlan;
 import tr.com.beinplanner.schedule.dao.SchedulePlan;
 import tr.com.beinplanner.schedule.dao.ScheduleTimePlan;
-import tr.com.beinplanner.schedule.dao.ScheduleUsersPersonalPlan;
 import tr.com.beinplanner.schedule.repository.ScheduleMembershipPlanRepository;
+import tr.com.beinplanner.schedule.repository.ScheduleMembershipTimePlanRepository;
 import tr.com.beinplanner.schedule.repository.SchedulePlanRepository;
 import tr.com.beinplanner.schedule.repository.ScheduleTimePlanRepository;
 import tr.com.beinplanner.schedule.repository.ScheduleUsersClassPlanRepository;
 import tr.com.beinplanner.schedule.repository.ScheduleUsersPersonalPlanRepository;
 import tr.com.beinplanner.util.DateTimeUtil;
+import tr.com.beinplanner.util.OhbeUtil;
 
 @Service
 @Qualifier("scheduleService")
@@ -28,6 +31,9 @@ public class ScheduleService {
 	
 	@Autowired
 	ScheduleTimePlanRepository scheduleTimePlanRepository;
+	
+	@Autowired
+	ScheduleMembershipTimePlanRepository scheduleMembershipTimePlanRepository;
 	
 	@Autowired
 	ScheduleMembershipPlanRepository scheduleMembershipPlanRepository;
@@ -49,6 +55,8 @@ public class ScheduleService {
 	public List<ScheduleTimePlan> findScheduleTimePlansPersonalPlanByDatesForStaff(long schStaffId, Date startDate, Date endDate,int firmId){
 		return scheduleTimePlanRepository.findScheduleTimePlansPersonalPlanByDatesForStaff(schStaffId, startDate, endDate);
 	}
+	
+	
 	public LastClasses findLastOfClasses(int firmId){
 		Date startDateNextWeek=DateTimeUtil.getNextWeekStartDate();
 		Date endDateNextWeek=DateTimeUtil.getNextWeekEndDate();
@@ -59,12 +67,12 @@ public class ScheduleService {
 		
 		List<ScheduleMembershipPlan> scheduleMembershipPlansW=scheduleMembershipPlanRepository.findLastOfClasses(startDate, endDate, firmId);
 		
-		List<ScheduleTimePlan> scheduleTimePlansForClassW=scheduleTimePlanRepository.findLastOfClassesForClass(startDate, endDate, firmId);
+		List<ScheduleTimePlan> scheduleTimePlansForClassW=scheduleTimePlanRepository.findClassesForClass(startDate, endDate, firmId);
 		scheduleTimePlansForClassW.forEach(stfpw->{
 			stfpw.setScheduleUsersClassPlans(scheduleUsersClassPlanRepository.findBySchtId(stfpw.getSchtId()));
 		});
 		
-		List<ScheduleTimePlan> scheduleTimePlansForPersonalW=scheduleTimePlanRepository.findLastOfClassesForPersonal(startDate, endDate, firmId);
+		List<ScheduleTimePlan> scheduleTimePlansForPersonalW=scheduleTimePlanRepository.findClassesForPersonal(startDate, endDate, firmId);
 		scheduleTimePlansForPersonalW.forEach(stfpw->{
 			stfpw.setScheduleUsersPersonalPlans(scheduleUsersPersonalPlanRepository.findBySchtId(stfpw.getSchtId()));
 		});
@@ -73,15 +81,13 @@ public class ScheduleService {
 		
 		List<ScheduleMembershipPlan> scheduleMembershipPlansNW=scheduleMembershipPlanRepository.findLastOfClasses(startDateNextWeek, endDateNextWeek, firmId);
 		
-		
-		
-		List<ScheduleTimePlan> scheduleTimePlansForClassNW=scheduleTimePlanRepository.findLastOfClassesForClass(startDateNextWeek, endDateNextWeek, firmId);
+		List<ScheduleTimePlan> scheduleTimePlansForClassNW=scheduleTimePlanRepository.findClassesForClass(startDateNextWeek, endDateNextWeek, firmId);
 		
 		scheduleTimePlansForClassNW.forEach(stfpw->{
 			stfpw.setScheduleUsersClassPlans(scheduleUsersClassPlanRepository.findBySchtId(stfpw.getSchtId()));
 		});
 		
-		List<ScheduleTimePlan> scheduleTimePlansForPersonalNW=scheduleTimePlanRepository.findLastOfClassesForPersonal(startDateNextWeek, endDateNextWeek, firmId);
+		List<ScheduleTimePlan> scheduleTimePlansForPersonalNW=scheduleTimePlanRepository.findClassesForPersonal(startDateNextWeek, endDateNextWeek, firmId);
 		scheduleTimePlansForPersonalNW.forEach(stfpnw->{
 			stfpnw.setScheduleUsersPersonalPlans(scheduleUsersPersonalPlanRepository.findBySchtId(stfpnw.getSchtId()));
 		});
@@ -100,6 +106,33 @@ public class ScheduleService {
 		
 	}
 	
+	
+	public PlannedClassInfo getPlannedClassInfoForPersonalAndClassAndMembership(int firmId, int year, int month) {
+		String monthStr=""+month;
+		if(month<10)
+			 monthStr="0"+month;
+		
+		String startDateStr="01/"+monthStr+"/"+year+" 00:00";
+		
+		Date startDate=OhbeUtil.getThatDayFormatNotNull(startDateStr, "dd/MM/yyyy HH:mm");
+		Date endDate=OhbeUtil.getDateForNextMonth(startDate, 1);
+		
+		
+		PlannedClassInfo plannedClassInfo=new PlannedClassInfo();
+		
+		List<ScheduleTimePlan> scheduleTimePlansForPersonal=scheduleTimePlanRepository.findClassesForPersonal(startDate, endDate, firmId);
+		
+		List<ScheduleTimePlan> scheduleTimePlansForClass=scheduleTimePlanRepository.findClassesForClass(startDate, endDate, firmId);
+		
+		List<ScheduleMembershipTimePlan> scheduleMembershipTimePlans=scheduleMembershipTimePlanRepository.findScheduleMembershipTimePlan(startDate, endDate, firmId);
+		
+		
+		plannedClassInfo.setClassCount(scheduleTimePlansForPersonal.size()+scheduleTimePlansForClass.size()+scheduleMembershipTimePlans.size());
+		plannedClassInfo.setMonth(month);
+		plannedClassInfo.setMonthName(DateTimeUtil.getMonthNamesBySequence(month));
+		
+		return plannedClassInfo;
+	}
 	
 	
 	
