@@ -1,11 +1,11 @@
-package tr.com.beinplanner.user.dao;
+package com.beinplanner.security.user;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import tr.com.beinplanner.user.dao.User;
 
 public class CustomUserDetails extends User implements UserDetails {
 

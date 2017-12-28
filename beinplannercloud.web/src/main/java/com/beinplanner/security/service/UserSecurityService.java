@@ -1,4 +1,4 @@
-package tr.com.beinplanner.user.service;
+package com.beinplanner.security.service;
 
 import java.util.Optional;
 
@@ -9,11 +9,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.beinplanner.security.user.CustomUserDetails;
+
 import tr.com.beinplanner.login.session.LoginSession;
 import tr.com.beinplanner.settings.service.SettingsService;
-import tr.com.beinplanner.user.dao.CustomUserDetails;
 import tr.com.beinplanner.user.dao.User;
 import tr.com.beinplanner.user.repository.UserRepository;
+
 /**
  * 
  * @author Bahadır Sezgun
