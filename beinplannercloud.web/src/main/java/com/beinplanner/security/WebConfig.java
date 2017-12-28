@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -15,23 +16,39 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	 @Override
 	    public void addViewControllers(ViewControllerRegistry registry) {
-	        registry.addViewController("/login").setViewName("login");
-	        registry.addViewController("/").setViewName("login");
+	        registry.addViewController("/login");//.setViewName("login");
+	        registry.addViewController("/");//.setViewName("login");
+	        registry.addViewController("/beincloud");//.setViewName("beincloud");
+	        registry.addViewController("/error");//.setViewName("error");
+	        registry.addViewController("/logout");//.setViewName("logout");
+	        
 	    }
 
 	 @Bean
 	 public InternalResourceViewResolver viewResolver() {
 	  InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-	  resolver.setPrefix("/");
+	 // resolver.setPrefix("/");
 	  resolver.setSuffix(".html");
 	  return resolver;
 	 }
 	
 	@RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
 	public String login(){
-		return "index";
+		return "index.html";
 	}
 	
+	@RequestMapping(value={ "/beincloud"}, method = RequestMethod.GET)
+	public String beincloud(){
+		return "/bein/index.html";
+	}
+	@RequestMapping(value={ "/error"}, method = RequestMethod.GET)
+	public String error(){
+		return "/lock.html";
+	}
+	@RequestMapping(value={ "/logout"}, method = RequestMethod.GET)
+	public String logout(){
+		return "/lock.html";
+	}
 	
 	 
 	 @Override

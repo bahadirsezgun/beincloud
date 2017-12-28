@@ -17,7 +17,9 @@ import tr.com.beinplanner.bonus.dao.UserBonusPaymentClass;
 import tr.com.beinplanner.bonus.dao.UserBonusPaymentPersonal;
 import tr.com.beinplanner.bonus.service.UserBonusPaymentService;
 import tr.com.beinplanner.dashboard.businessEntity.ActiveMember;
+import tr.com.beinplanner.dashboard.businessEntity.LastClasses;
 import tr.com.beinplanner.dashboard.businessEntity.LeftPaymentInfo;
+import tr.com.beinplanner.dashboard.businessEntity.PlannedClassInfo;
 import tr.com.beinplanner.dashboard.businessEntity.TodayPayment;
 import tr.com.beinplanner.income.dao.PastIncomeMonthTbl;
 import tr.com.beinplanner.income.dao.PtExpenses;
@@ -232,9 +234,35 @@ public class DashboardController {
 	}
 	
 	
-	@PostMapping(value="/lastOfClasses")
-	public  @ResponseBody int lastOfClasses() {
-		List<User> users=userService.findAllByFirmIdAndUserType(loginSession.getUser().getFirmId(), UserTypes.USER_TYPE_MEMBER_INT);
-		return users.size();
+	
+	
+	@PostMapping(value="/getLastOfClasses")
+	public  @ResponseBody HmiResultObj getLastOfClasses() {
+		LastClasses lastClasses=scheduleService.findLastOfClasses(loginSession.getUser().getFirmId());
+		HmiResultObj hmiResultObj=new HmiResultObj();
+		hmiResultObj.setResultObj(lastClasses);
+		return hmiResultObj;
 	}
+	
+	@PostMapping(value="/plannedClassInfo/{year}")
+	public  @ResponseBody HmiResultObj getPlannedClassInfo(@PathVariable("year") int year) {
+		List<PlannedClassInfo> plannedClassInfos=new ArrayList<PlannedClassInfo>();
+		
+		for(int i=1;i<13;i++){
+			PlannedClassInfo plannedClassInfo=scheduleService.getPlannedClassInfoForPersonalAndClassAndMembership(loginSession.getUser().getFirmId(), year, i);
+			plannedClassInfos.add(plannedClassInfo);
+		}
+		HmiResultObj hmiResultObj=new HmiResultObj();
+		hmiResultObj.setResultObj(plannedClassInfos);
+		return hmiResultObj;
+	}
+	
+	@PostMapping(value="/specialDates")
+	public  @ResponseBody HmiResultObj getSpecialDates() {
+		List<User> specialUser=userService.finsSpecialDateOfUsers(loginSession.getUser().getFirmId());
+		HmiResultObj hmiResultObj=new HmiResultObj();
+		hmiResultObj.setResultObj(specialUser);
+		return hmiResultObj;
+	}
+	
 }

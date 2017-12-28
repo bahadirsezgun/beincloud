@@ -104,22 +104,17 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	};
 	
 	function findSpecialDates(){
-		 $.ajax({
-			  type:'POST',
-			  url: "../pt/ptusers/specialDates",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				
-					$scope.specialUsers=res;
-				    $scope.$apply();
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			{ 
-			  if(jqXHR.status == 404 || textStatus == 'error')	
-				  $(location).attr("href","/lock.html");
-			})
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/specialDates"
+			}).then(function successCallback(response) {
+				$scope.specialUsers=response.data.resultObj;
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			});
+		
+		
 	}
 	
 	function findPtGlobals(){
@@ -137,14 +132,10 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 		    getSaledPackets();
 		    getPacketPayments();
 		    findTotalMemberInSystem();
-		    /*
-			loggedInUser();
-		    
-					
-		  			findPastForYearCount();
-		  			findSpecialDates();
-		  			lastClasses();
-			*/
+		    lastClasses();
+		    findPastForYearCount();
+		    findSpecialDates();
+		   
 			
 		}else{
 		
@@ -179,18 +170,10 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 				    getSaledPackets();
 				    getPacketPayments();
 				    findTotalMemberInSystem();
-				    /*
-				    
-				    
-					
-					
-					
-					
-					
-		  			findPastForYearCount();
-		  			findSpecialDates();
-		  			lastClasses();
-					*/
+				    lastClasses();
+				    findPastForYearCount();
+				    findSpecialDates();
+				  
 				}
 			}).fail  (function(jqXHR, textStatus, errorThrown) 
 					{ 
@@ -211,13 +194,13 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	function lastClasses(){
 		$http({
 			  method: 'POST',
-			  url: "/bein/dashboard/lastOfClasses"
+			  url: "/bein/dashboard/getLastOfClasses"
 			}).then(function successCallback(response) {
 				$scope.lastOfClasses=response.data.resultObj;
-				var cotwPC=res.stpTW.length;
-	  			var cotwM=res.stpMTW.length;
-	  			var cotnwPC=res.stpNW.length;
-	  			var cotnwM=res.stpMNW.length;
+				var cotwPC=$scope.lastOfClasses.stpTW.length;
+	  			var cotwM=$scope.lastOfClasses.stpMTW.length;
+	  			var cotnwPC=$scope.lastOfClasses.stpNW.length;
+	  			var cotnwM=$scope.lastOfClasses.stpMNW.length;
 	  			
 	  			$scope.lastOfCountThisWeek=parseInt(cotwPC)+parseInt(cotwM);
 	  			$scope.lastOfCountNextWeek=parseInt(cotnwPC)+parseInt(cotnwM);
@@ -418,61 +401,179 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
 	}
 	
 	
+	$scope.lastMonthName;
+	$scope.lastMonthCount1=0;
+	$scope.lastMonthCount2=0;
+	$scope.lastYearCount1=0;
+	$scope.lastYearCount2=0;
 	
 	
 	
 	
-   function todayInlineChart(){
+	function findPastForYearCount(){
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/plannedClassInfo/"+$scope.year,
+			}).then(function successCallback(response) {
+				$scope.plannedClassInfos=response.data.resultObj;
+				findPrevForYearCount();
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 		
-	   if($scope.todayPayment==null){
-		   $scope.todayPayment=new Object();
-		   $scope.todayPayment.incomeAmount=0;
-		   $scope.todayPayment.expenseAmount=0;
+	}
+	
+	$scope.lastYearRate=0;
+	$scope.lastMonthRate=0;
+	$scope.countMonthName;
+	
+	function findPrevForYearCount(){
+		
+		$http({
+			  method: 'POST',
+			  url: "/bein/dashboard/plannedClassInfo/"+$scope.prevYear,
+			}).then(function successCallback(response) {
+				$scope.prevPlannedClassInfos=response.data.resultObj;
+				$.each($scope.prevPlannedClassInfos,function(i,ppci){
+				    if(ppci.month==$scope.month){
+				    	$scope.countMonthName=ppci.monthName;
+				    	$scope.lastMonthCount1=ppci.classCount;
+				     }
+				    
+				    $scope.lastYearCount1=$scope.lastYearCount1+ppci.classCount;
+				});
+				
+				$.each($scope.plannedClassInfos,function(i,pci){
+				    if(pci.month==$scope.month){
+				    	$scope.countMonthName=pci.monthName;
+				    	$scope.lastMonthCount2=pci.classCount;
+				     }
+				    $scope.lastYearCount2=$scope.lastYearCount2+pci.classCount;
+				});
+				
+				if($scope.lastYearCount1>0){
+					$scope.lastYearRate=Math.ceil(parseFloat($scope.lastYearCount2/$scope.lastYearCount1)*100);
+					
+					if($scope.lastYearRate>100){
+						$scope.lastYearRate=100;
+					}
+				}else{
+					$scope.lastYearRate=100;
+				}
+				
+				
+				if($scope.lastMonthCount1>0){
+					$scope.lastMonthRate=Math.ceil(parseFloat($scope.lastMonthCount2/$scope.lastMonthCount1)*100);
+					
+					if($scope.lastMonthRate>100){
+						$scope.lastMonthRate=100;
+					}
+				}else{
+					$scope.lastMonthRate=100;
+				}
+				getDataToGraphCount();
+				
+				
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
+		
+		
+	}
+	
+	
+	
+	function todayInlineChart(){
+		
+		   if($scope.todayPayment==null){
+			   $scope.todayPayment=new Object();
+			   $scope.todayPayment.incomeAmount=0;
+			   $scope.todayPayment.expenseAmount=0;
+			   
+		   }
 		   
-	   }
-	   
-		var data = [
-		             {
-		                 label: "bar",
-		                 data: [ [1, $scope.todayPayment.incomeAmount], [2, $scope.todayPayment.expenseAmount] ]
-		             }
-		         ];
-			
-		var chartUsersOptions = {
-	            series: {
-	                bars: {
-	                    show: true,
-	                    barWidth: 0.8,
-	                    fill: true,
-	                    fillColor: {
-	                        colors: [ {  opacity: 0.6,color:'#ffffff' }, { opacity: 0.6,color:'#62cb31' } ]
-	                    },
-	                    lineWidth: 1
-	                }
-	            },
-	            xaxis: {
-	                tickDecimals: 0
-	            },
-	            colors: ["#62cb31","#ffffff"],
-	            grid: {
-	                color: "#ffffff",
-	                hoverable: true,
-	                clickable: false,
-	                tickColor: "#ffffff",
-	                borderWidth: 0,
-	                borderColor: 'ffffff',
-	            },
-	            legend: {
-	                show: false
-	            },
-	            tooltip: false
-	        };
+			var data = [
+			             {
+			                 label: "bar",
+			                 data: [ [1, $scope.todayPayment.incomeAmount], [2, $scope.todayPayment.expenseAmount] ]
+			             }
+			         ];
+				
+			var chartUsersOptions = {
+		            series: {
+		                bars: {
+		                    show: true,
+		                    barWidth: 0.8,
+		                    fill: true,
+		                    fillColor: {
+		                        colors: [ {  opacity: 0.6,color:'#ffffff' }, { opacity: 0.6,color:'#62cb31' } ]
+		                    },
+		                    lineWidth: 1
+		                }
+		            },
+		            xaxis: {
+		                tickDecimals: 0
+		            },
+		            colors: ["#62cb31","#ffffff"],
+		            grid: {
+		                color: "#ffffff",
+		                hoverable: true,
+		                clickable: false,
+		                tickColor: "#ffffff",
+		                borderWidth: 0,
+		                borderColor: 'ffffff',
+		            },
+		            legend: {
+		                show: false
+		            },
+		            tooltip: false
+		        };
 
-           $.plot($("#flot-bar-chart"), data, chartUsersOptions);
+	           $.plot($("#flot-bar-chart"), data, chartUsersOptions);
+	    }
+	function todayInlineChartCount(){
+		var inOut=$scope.plannedClassInfos;
+		var dp=[];
+		$.each(inOut,function(i,pc){
+			dp.push([i,pc.classCount]);
+			
+			
+		});
+			
+		var chartIncomeData = [
+               {
+                   label: "line",
+                   data : dp
+               }
+           ];
+
+           var chartIncomeOptions = {
+               series: {
+                   lines: {
+                       show: true,
+                       lineWidth: 0,
+                       fill: true,
+                       fillColor: "#64cc34"
+
+                   }
+               },
+               colors: ["#62cb31"],
+               grid: {
+                   show: false
+               },
+               legend: {
+                   show: false
+               }
+           };
+
+           $.plot($("#flot-income-chart-count"), chartIncomeData, chartIncomeOptions);
     }
 	
 	
 	
+
 	function getDataToGraph(){
 		
 		var inOut=$scope.incomes;
@@ -525,176 +626,6 @@ ptBossApp.controller('DashboardFinanceController', function($rootScope,$scope,$t
         $.plot($("#flot-line-chart"), [data1, data2], chartUsersOptions);
         
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	function findFirms(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/definition/firm/findFirms",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.firms=res;
-				$scope.firmId=$scope.firms[0].firmId;
-				$scope.firmName=$scope.firms[0].firmName;
-				$scope.$apply();
-				findPastForYear();
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-					{ 
-				  if(jqXHR.status == 404 || textStatus == 'error')	
-					  $(location).attr("href","/beincloud/lock.html");
-			});
-		
-		
-	}
-	
-	
-	
-	$scope.lastMonthName;
-	$scope.lastMonthCount1=0;
-	$scope.lastMonthCount2=0;
-	
-	
-	
-	$scope.lastYearCount1=0;
-	$scope.lastYearCount2=0;
-	
-	
-	
-	
-	function findPastForYearCount(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/dashboard/plannedClassInfo/"+$scope.year,
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.plannedClassInfos=res;
-				
-				
-				findPrevForYearCount();
-				$scope.$apply();
-				
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) {
-				$scope.$apply();
-			});
-	}
-	
-	$scope.lastYearRate=0;
-	$scope.lastMonthRate=0;
-	$scope.countMonthName;
-	
-	function findPrevForYearCount(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/dashboard/plannedClassInfo/"+$scope.prevYear,
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.prevPlannedClassInfos=res;
-				
-				
-				
-				
-				$.each($scope.prevPlannedClassInfos,function(i,ppci){
-				    if(ppci.month==$scope.month){
-				    	$scope.countMonthName=ppci.monthName;
-				    	$scope.lastMonthCount1=ppci.classCount;
-				     }
-				    
-				    $scope.lastYearCount1=$scope.lastYearCount1+ppci.classCount;
-				});
-				
-				$.each($scope.plannedClassInfos,function(i,pci){
-				    if(pci.month==$scope.month){
-				    	$scope.countMonthName=pci.monthName;
-				    	$scope.lastMonthCount2=pci.classCount;
-				     }
-				    $scope.lastYearCount2=$scope.lastYearCount2+pci.classCount;
-				});
-				
-				
-				
-			
-				if($scope.lastYearCount1>0){
-					$scope.lastYearRate=Math.ceil(parseFloat($scope.lastYearCount2/$scope.lastYearCount1)*100);
-					
-					if($scope.lastYearRate>100){
-						$scope.lastYearRate=100;
-					}
-				}else{
-					$scope.lastYearRate=100;
-				}
-				
-				
-				if($scope.lastMonthCount1>0){
-					$scope.lastMonthRate=Math.ceil(parseFloat($scope.lastMonthCount2/$scope.lastMonthCount1)*100);
-					
-					if($scope.lastMonthRate>100){
-						$scope.lastMonthRate=100;
-					}
-				}else{
-					$scope.lastMonthRate=100;
-				}
-				
-				
-				$scope.$apply();
-				getDataToGraphCount();
-			}).fail  (function(jqXHR, textStatus, errorThrown) {
-				$scope.$apply();
-			});
-	}
-	
-	
-	function todayInlineChartCount(){
-		var inOut=$scope.plannedClassInfos;
-		var dp=[];
-		$.each(inOut,function(i,pc){
-			dp.push([i,pc.classCount]);
-			
-			
-		});
-			
-		var chartIncomeData = [
-               {
-                   label: "line",
-                   data : dp
-               }
-           ];
-
-           var chartIncomeOptions = {
-               series: {
-                   lines: {
-                       show: true,
-                       lineWidth: 0,
-                       fill: true,
-                       fillColor: "#64cc34"
-
-                   }
-               },
-               colors: ["#62cb31"],
-               grid: {
-                   show: false
-               },
-               legend: {
-                   show: false
-               }
-           };
-
-           $.plot($("#flot-income-chart-count"), chartIncomeData, chartIncomeOptions);
-    }
-	
 	function getDataToGraphCount(){
 		
 		var inOut=$scope.plannedClassInfos;

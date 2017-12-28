@@ -8,11 +8,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.beinplanner.security.service.UserSecurityService;
+
 import tr.com.beinplanner.login.session.LoginSession;
-import tr.com.beinplanner.user.service.UserSecurityService;
 
 
 
@@ -49,11 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/homerlib/**","/login.html", "/app/**", "/jslib/**","/index.html","/lock.html","**/*.js","**/*.css").permitAll()
                 .anyRequest().authenticated()
                 .and()
-              .formLogin()
+                .formLogin()
                         .loginPage("/login").failureUrl("/lock.html")
-                        .loginProcessingUrl("/login").permitAll().defaultSuccessUrl("/bein/index.html/#/dashboard",true)
-             .and()
-             .logout().logoutSuccessUrl("/lock.html")
+                        .loginProcessingUrl("/login").permitAll().defaultSuccessUrl("/bein/index.html",true)
+                .and()
+                .logout().logoutSuccessUrl("/lock.html")
                 .permitAll();
 	        
 	      

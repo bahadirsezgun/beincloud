@@ -1,55 +1,23 @@
-ptBossApp.controller('ClassProgController', function($rootScope,$scope,$translate,parameterService,$location,homerService,commonService,globals) {
+ptBossApp.controller('ClassProgController', function($rootScope,$scope,$http,$translate,parameterService,$location,homerService,commonService,globals) {
 
 	
-	$scope.groupRestriction=$rootScope.groupRestriction;
 	
+	$scope.programClass=new Object();
+	$scope.programClass.progStatus="1";
+	$scope.programClass.progUserId="0";
+	$scope.programClass.type="pc";
+	$scope.programClass.restType="0";
+	$scope.programClass.minMemberCount=1;
+	$scope.programClass.maxMemberCount=10;
+	$scope.programClass.progPrice=0;
+	$scope.programClass.restDuration=1;
+	
+    $scope.programClasses;
 	$scope.noProgram=true;
 	$scope.willProgramCreate=false;
-	$scope.programClasses;
 	$scope.programInstructors;
 	
-	$scope.progId="0";
-	$scope.progName="";
-	$scope.progShortName="";
-	$scope.progCount=0;
-	$scope.minMemberCount=0;
-	$scope.maxMemberCount=10;
-	$scope.progPrice=0;
-	$scope.progDuration=60;
-	$scope.progBeforeDuration=0;
-	$scope.progAfterDuration=0;
-	$scope.progUserId="0";
-	$scope.progDescription="";
-	$scope.progComment="";
-	$scope.firmId;
-	$scope.progStatus="1";
-	
-	$scope.restFlag="0";
-	$scope.restType="0";
-	$scope.restDuration=0;
-	
-	$scope.progDetails;
-	$scope.dformat="dd/mm/yyyy";
-	
-	
-    $scope.monday="";
-    $scope.tuesday="";
-    $scope.wednesday="";
-    $scope.thursday="";
-    $scope.friday="";
-    $scope.saturday="";
-    $scope.sunday="";
-    
-    
-
-	$scope.ptTz;
-	$scope.ptCurrency;
-	$scope.ptStaticIp;
-	$scope.ptLang;
-	$scope.ptDateFormat;
-    
-    
-    toastr.options = {
+	toastr.options = {
         "debug": false,
         "newestOnTop": false,
         "positionClass": "toast-top-center",
@@ -58,207 +26,77 @@ ptBossApp.controller('ClassProgController', function($rootScope,$scope,$translat
     };
 
     $scope.init = function(){
-    	$('.clockpicker').clockpicker({autoclose: true, placement: 'left',align: 'top'});
-    	$("[data-toggle=popover]").popover();
-    	findGlobals();
-		
-    	commonService.pageName=$translate.instant("definition_personelprog");
+     	$("[data-toggle=popover]").popover();
+    		commonService.pageName=$translate.instant("definition_personelprog");
 		commonService.pageComment=$translate.instant("personelProgDefinitionComment");
 		commonService.normalHeaderVisible=true;
 		commonService.setNormalHeader();
-		
+		findInstructors();
+		findClassPrograms();
 		
     };
-    
-    function findGlobals(){
-    	$.ajax({
-    		  type:'POST',
-    		  url: "../pt/setting/findPtGlobal",
-    		  contentType: "application/json; charset=utf-8",				    
-    		  dataType: 'json', 
-    		  cache:false
-    		}).done(function(res) {
-    			if(res!=null){
-    				$scope.ptTz=res.ptTz;
-    				$scope.ptCurrency=res.ptCurrency;
-    				$scope.ptStaticIp=res.ptStaticIp;
-    				$scope.ptLang=res.ptLang;
-    				$scope.ptDateFormat=res.ptDateFormat;
-    				if($scope.ptLang!=""){
-    					var lang=$scope.ptLang.substring(0,2);
-    					$translate.use(lang);
-    				}
-    			
-    			}
-    			findFirms();
-    		}).fail  (function(jqXHR, textStatus, errorThrown) 
-    				{ 
-  			  if(jqXHR.status == 404 || textStatus == 'error')	
-  				  $(location).attr("href","/beincloud/lock.html");
-  			});
-    	}
    
-    
     function findInstructors(firmId){
-    	$.ajax({
-			  type:'POST',
-			  url: "../pt/ptusers/findAll/"+firmId+"/"+globals.USER_TYPE_SCHEDULAR_STAFF,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.programInstructors=res;
-				$scope.$apply();
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			    { 
-				  if(jqXHR.status == 404 || textStatus == 'error')	
-					  $(location).attr("href","/beincloud/lock.html");
-				});
+    	     $http({
+			  method: 'POST',
+			  url: "/bein/staff/findAllSchedulerStaff"
+			}).then(function successCallback(response) {
+				$scope.programInstructors=response.data.resultObj;
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			});
     }
     
     function findClassPrograms(firmId){
-    	$.ajax({
-			  type:'POST',
-			  url: "../pt/program/findAllProgramsForDefinition/"+firmId+"/"+globals.PROGRAM_CLASS,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				
-				if(res.length!=0){
-					$scope.programClasses=res;
+    		$http({
+			  method: 'POST',
+			  url: "/bein/program/findClassPrograms"
+			}).then(function successCallback(response) {
+				$scope.programClasses=response.data.resultObj;
+				if($scope.programClasses.length!=0){
 					$scope.noProgram=false;
 				}else{
-					$scope.programClasses=null;
 					$scope.noProgram=true;
 				}
 				
-				$scope.$apply();
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-					{ 
-				  if(jqXHR.status == 404 || textStatus == 'error')	
-					  $(location).attr("href","/beincloud/lock.html");
-				});
-		
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			});
 	}
    
-	function findFirms(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/definition/firm/findFirms",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.firms=res;
-				$scope.firmId=$scope.firms[0].firmId;
-				findInstructors($scope.firmId);
-				findClassPrograms($scope.firmId);
-				
-				var lang=$scope.ptLang.substring(0, 2);
-				if(lang!="tr"){
-					$scope.dformat='mm/dd/yyyy';
-				}
-				
-				/*$("#progDuration").TouchSpin();
-			    $("#progBeforeDuration").TouchSpin();
-			    $("#progAfterDuration").TouchSpin();
-				*/
-				$scope.$apply();
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-					{ 
-				  if(jqXHR.status == 404 || textStatus == 'error')	
-					  $(location).attr("href","/beincloud/lock.html");
-				});
-	}
 	
 	
 	$scope.addNewClassProgram =function(){
-		$scope.progId="0";
-		$scope.progName="";
-		$scope.progShortName="";
-		$scope.progCount=0;
-		$scope.progPrice=0;
-		$scope.progDuration=60;
-		$scope.progBeforeDuration=0;
-		$scope.progAfterDuration=0;
-		$scope.progUserId="0";
-		$scope.progDescription="";
-		$scope.progComment="";
-		$scope.progStatus="1";
-		$scope.minMemberCount=0;
-		$scope.maxMemberCount=10;
-		
-		$scope.restFlag="0";
-		$scope.restType="0";
-		$scope.restDuration=0;	
-		
-		$scope.monday="";
-	    $scope.tuesday="";
-	    $scope.wednesday="";
-	    $scope.thursday="";
-	    $scope.friday="";
-	    $scope.saturday="";
-	    $scope.sunday="";
-		
-		if (!$scope.$$phase) 
-			$scope.$apply();
-		
+		$scope.programClass=new Object();
+		$scope.programClass.progStatus="1";
+		$scope.programClass.progUserId="0";
+		$scope.programClass.restFlag="0";
+		$scope.programClass.type="pc";
+		$scope.programClass.progDescription="";
+		$scope.programClass.progComment="";
+		$scope.programClass.restType="0";
+		$scope.programClass.progPrice=0;
+		$scope.programClass.restDuration=1;
 		$scope.willProgramCreate=true;
-		
 	};
 	
-	
-	
 	$scope.showProgram =function(progId){
-		
-		
-		   $.ajax({
-			  type:'POST',
-			  //url: "../pt/program/findProgramClass/"+progId,
-			  url: "../pt/program/findProgramByProgId/"+progId+"/"+globals.PROGRAM_CLASS,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				if(res!=null){
-					$scope.progId=res.progId;
-					$scope.progName=res.progName;
-					$scope.progShortName=res.progShortName;
-					$scope.progCount=res.progCount;
-					$scope.progStartDate=res.progStartDateStr;
-					$scope.progEndDate=res.progEndDateStr;
-					$scope.progEndless=""+res.progEndless;
-					$scope.progPrice=res.progPrice;
-					$scope.progDuration=res.progDuration;;
-					$scope.progBeforeDuration=res.progBeforeDuration;
-					$scope.progAfterDuration=res.progAfterDuration;
-					$scope.progUserId=""+res.progUserId;
-					$scope.progDescription=res.progDescription;
-					$scope.progComment=res.progComment;
-					$scope.firmId=res.firmId;
-					$scope.progStatus=""+res.progStatus;
-					$scope.willProgramCreate=true;
-					$scope.minMemberCount=res.minMemberCount;
-					$scope.maxMemberCount=res.maxMemberCount;
-					
-					$scope.restFlag=""+res.restFlag;
-					$scope.restType=""+res.restType;
-					$scope.restDuration=res.restDuration;
-					
-					$scope.$apply();
-					
-				}else{
-					toastr.error($translate.instant('noProcessDone'));
-				}
-				
-				
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			{ 
-			  if(jqXHR.status == 404 || textStatus == 'error')	
-				  $(location).attr("href","/beincloud/lock.html");
+		$http({
+			  method: 'POST',
+			  url: "/bein/program/findClassProgramById/"+progId
+			}).then(function successCallback(response) {
+				$scope.programClass=response.data.resultObj;
+				$scope.programClass.progStatus=""+$scope.programClass.progStatus;
+				$scope.programClass.progUserId=""+$scope.programClass.progUserId;
+				$scope.programClass.restFlag=""+$scope.programClass.restFlag;
+				$scope.programClass.restType=""+$scope.programClass.restType;
+				$scope.programClass.type="pc";
+				$scope.willProgramCreate=true;
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
 		
 	};
@@ -266,72 +104,27 @@ ptBossApp.controller('ClassProgController', function($rootScope,$scope,$translat
 	
 	
 	$scope.createClassProgram =function(){
-		
-		if($scope.progStartDate==""){
-			toastr.error($translate.instant('fillRequiredFields'));
-			return;
-		}
-		else if($scope.progEndDate==""){
-			$scope.progEndDate=$scope.progStartDate;
-		}
-		
-		//var classDetails=generateClassDetailProgram($scope.progId);
-		
-		var frmDatum = {'type':'pc',
-						'progId':$scope.progId,
-				        'firmId':$scope.firmId,
-				        'progName':$scope.progName,
-				        'progStatus':$scope.progStatus,
-				        'progCount':$scope.progCount,
-						'progDuration':$scope.progDuration,
-				        'progUserId':$scope.progUserId,
-				        'progBeforeDuration':$scope.progBeforeDuration,
-				        'progAfterDuration':$scope.progAfterDuration,
-				        'progDescription':$scope.progDescription,
-				        'progComment':$scope.progComment,
-				        'progPrice':$scope.progPrice,
-				        'dateFormat':$scope.dformat,
-				        'minMemberCount':$scope.minMemberCount,
-						'maxMemberCount':$scope.maxMemberCount,
-						'progShortName':$scope.progShortName,
-						'restFlag':$scope.restFlag,
-				        'restType':$scope.restType,
-				        'restDuration':$scope.restDuration
-		
-					}; 
-		   $.ajax({
-			  type:'POST',
-			  url: "../pt/program/createProgram",
-			  contentType: "application/json; charset=utf-8",				    
-			  data: JSON.stringify(frmDatum),
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				
-				if(res!=null){
-					$scope.progId=res.resultMessage.trim();
-					findClassPrograms($scope.firmId);
-					toastr.success($translate.instant('success'));
-				}else{
-					toastr.error($translate.instant('noProcessDone'));
-				}
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			{ 
-			  if(jqXHR.status == 404 || textStatus == 'error')	
-				  $(location).attr("href","/beincloud/lock.html");
+		$http({
+			  method: 'POST',
+			  url: "/bein/program/createClassProgram",
+			  data:angular.toJson($scope.programClass)
+			}).then(function successCallback(response) {
+				$scope.programClass=response.data.resultObj;
+				$scope.programClass.progStatus=""+$scope.programClass.progStatus;
+				$scope.programClass.progUserId=""+$scope.programClass.progUserId;
+				$scope.programClass.restFlag=""+$scope.programClass.restFlag;
+				$scope.programClass.restDuration=$scope.programClass.restDuration;
+				$scope.programClass.restType=""+$scope.programClass.restType;
+				$scope.programClass.type="pc";
+				$scope.willProgramCreate=true;
+				findClassPrograms();
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
-		
-		
-		
-		
 	}
 	
-	
-	
-	
 	$scope.deleteClassProgram =function(progId){
-		   
 		swal({
             title: $translate.instant("areYouSureToDelete"),
             text: $translate.instant("deleteProgramComment"),
@@ -344,47 +137,24 @@ ptBossApp.controller('ClassProgController', function($rootScope,$scope,$translat
             closeOnCancel: true },
         function (isConfirm) {
             if (isConfirm) {
-            	
-            	
-            	
-               var frmDatum = {"progId":progId,'type':'pc'}; 
-     		   $.ajax({
-     			  type:'POST',
-     			  url: "../pt/program/deleteProgram",
-     			  contentType: "application/json; charset=utf-8",				    
-     			  data: JSON.stringify(frmDatum),
-     			  dataType: 'json', 
-     			  cache:false
-     			}).done(function(res) {
-     				
-     				if(res.resultStatu="1"){
-     					swal($translate.instant("deleted"), $translate.instant("deletedSuccessMessage"), "success");
-     					$scope.willProgramCreate=false;
-     					findClassPrograms($scope.firmId);
-     				}else{
-     					swal($translate.instant("nodeleted"), $translate.instant("programUsedInSales"), "fail");
-     				}
-     				
-     				
-     				
-     			}).fail  (function(jqXHR, textStatus, errorThrown) 
-     			{ 
-     			  if(jqXHR.status == 404 || textStatus == 'error')	
-     				  $(location).attr("href","/beincloud/lock.html");
-     			});
-            	
-                
+              	$http({
+	   				  method: 'POST',
+	   				  url: "/bein/program/deleteClassProgram/"+progId,
+	   				}).then(function successCallback(response) {
+	   					if(response.data.resultStatu=="1"){
+	     					swal($translate.instant("deleted"), $translate.instant("deletedSuccessMessage"), "success");
+	     					$scope.willProgramCreate=false;
+	     					findClassPrograms();
+	     				}else{
+	     					swal($translate.instant("nodeleted"), $translate.instant("programUsedInSales"), "error");
+	     				}
+	   				}, function errorCallback(response) {
+	   				    // called asynchronously if an error occurs
+	   				    // or server returns response with an error status.
+	   				});
             } else {
                 swal($translate.instant("deleteCanceled"), "");
             }
         });
-		
-		   
 	};
-	
-	
-	
-	
-    
-
 });

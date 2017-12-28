@@ -209,7 +209,7 @@
              templateUrl: '/bein/bonus/class/cbonus.html'
          }).
          otherwise({
-         redirectTo: '/index.html'
+         redirectTo: '/dashboard'
          });
      
      

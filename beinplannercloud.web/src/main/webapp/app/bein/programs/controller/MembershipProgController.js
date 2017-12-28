@@ -1,4 +1,4 @@
-ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$translate,parameterService,$location,homerService,commonService,globals) {
+ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$translate,$http,parameterService,$location,homerService,commonService,globals) {
 
 	$scope.membershipRestriction=$rootScope.membershipRestriction;
 	
@@ -7,34 +7,25 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	$scope.programMemberships;
 	$scope.programInstructors;
 	
-	$scope.progId="0";
-	$scope.progName="";
-	$scope.progShortName="";
-	$scope.progPrice=0;
-	$scope.progDuration=1;
-	$scope.progDurationType="2";
-	$scope.progBeforeDuration=10;
-	$scope.progAfterDuration=5;
-	$scope.progUserId="0";
-	$scope.progDescription="";
-	$scope.progComment="";
-	$scope.firmId;
-	$scope.progStatus="1";
-	
-	$scope.progDetails;
-	$scope.dformat="dd/mm/yyyy";
-	
-	$scope.freezeDurationType="0";
-	$scope.freezeDuration="0";
-	$scope.maxFreezeCount="0";
 	
 	
 	
-	$scope.progRestriction="0";
 	
+	$scope.programMembership=new Object();
+	$scope.programMembership.progUserId="0";
+	$scope.programMembership.progStatus="1";
+	$scope.programMembership.progDurationType="2";
+	$scope.programMembership.progPrice=0;
+	$scope.programMembership.freezeDurationType="0";
 	
-    
-    $scope.monday="";
+	$scope.programMembership.freezeDuration=0;
+	$scope.programMembership.maxFreezeCount=0;
+	$scope.programMembership.progRestriction="0";
+	$scope.programMembership.progBeforeDuration=0;
+	$scope.programMembership.progAfterDuration=0;
+	$scope.programMembership.type="pm";
+	
+	$scope.monday="";
     $scope.tuesday="";
     $scope.wednesday="";
     $scope.thursday="";
@@ -42,16 +33,7 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
     $scope.saturday="";
     $scope.sunday="";
     
-    
-
-	$scope.ptTz;
-	$scope.ptCurrency;
-	$scope.ptStaticIp;
-	$scope.ptLang;
-	$scope.ptDateFormat;
-    
-	
-	$scope.progRestrictionMonday="-1";
+    $scope.progRestrictionMonday="-1";
 	$scope.progRestrictionTuesday="-1";
 	$scope.progRestrictionWednesday="-1";
 	$scope.progRestrictionThursday="-1";
@@ -74,130 +56,101 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
     	$('.clockpicker').clockpicker({autoclose: true, placement: 'left',align: 'top'});
     	$("[data-toggle=popover]").popover();
     	
-    	findGlobals();
     	
-		
     	commonService.pageName=$translate.instant("definition_membershipprog");
 		commonService.pageComment=$translate.instant("membershipProgDefinitionComment");
 		commonService.normalHeaderVisible=true;
 		commonService.setNormalHeader();
-		
-		
+		if(commonService.ptGlobal!=null){
+			$scope.dateFormat=commonService.ptGlobal.ptDateFormat;
+			$scope.dateTimeFormat=commonService.ptGlobal.ptDateTimeFormat;
+		}else{
+			findGlobals();
+		}
+		findMembershipPrograms();
+		findInstructors();
     };
     
-    function findGlobals(){
-    	$.ajax({
-    		  type:'POST',
-    		  url: "../pt/setting/findPtGlobal",
-    		  contentType: "application/json; charset=utf-8",				    
-    		  dataType: 'json', 
-    		  cache:false
-    		}).done(function(res) {
-    			if(res!=null){
-    				$scope.ptTz=res.ptTz;
-    				$scope.ptCurrency=res.ptCurrency;
-    				$scope.ptStaticIp=res.ptStaticIp;
-    				$scope.ptLang=res.ptLang;
-    				$scope.ptDateFormat=res.ptScrDateFormat;
-    				if($scope.ptLang!=""){
-    					var lang=$scope.ptLang.substring(0,2);
-    					$translate.use(lang);
-    				}
-    			
-    			}
-    			findFirms();
-    		}).fail  (function(jqXHR, textStatus, errorThrown) 
-    				{ 
-  			  if(jqXHR.status == 404 || textStatus == 'error')	
-  				  $(location).attr("href","/beincloud/lock.html");
-  			});
-    	};
    
+    function findGlobals(){
+    		$.ajax({
+	  		  type:'POST',
+	  		  url: "/bein/global/getGlobals",
+	  		  contentType: "application/json; charset=utf-8",				    
+	  		  dataType: 'json', 
+	  		  cache:false
+	  		}).done(function(result) {
+	  			var res=result.resultObj;
+	  			if(res!=null){
+	  				$scope.ptTz=res.ptTz;
+	  				$scope.ptCurrency=res.ptCurrency;
+	  				$scope.ptStaticIp=res.ptStaticIp;
+	  				$scope.ptLang=(res.ptLang).substring(0,2);
+	  				$scope.ptDateFormat=res.ptScrDateFormat;
+	  				
+	  				$translate.use($scope.ptLang);
+					$translate.refresh;
+					commonService.setPtGlobal(res);
+					$scope.$apply();
+					$scope.dateFormat=commonService.ptGlobal.ptDateFormat;
+					$scope.dateTimeFormat=commonService.ptGlobal.ptDateTimeFormat;
+	  			}
+	  			
+	  		});
+			}
     
-    function findInstructors(firmId){
-    	$.ajax({
-			  type:'POST',
-			  url: "../pt/ptusers/findAll/"+firmId+"/"+globals.USER_TYPE_SCHEDULAR_STAFF,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.programInstructors=res;
-				$scope.$apply();
-			});
+    
+    function findInstructors(){
+		 
+	    $http({
+		  method: 'POST',
+		  url: "/bein/staff/findAllSchedulerStaff"
+		}).then(function successCallback(response) {
+			$scope.programInstructors=response.data.resultObj;
+		}, function errorCallback(response) {
+		    // called asynchronously if an error occurs
+		    // or server returns response with an error status.
+		});
     }
     
     function findMembershipPrograms(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/program/findAllProgramsForDefinition/"+$scope.firmId+"/"+globals.PROGRAM_MEMBERSHIP,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				
-				if(res.length!=0){
-					$scope.programMemberships=res;
+		$http({
+			  method: 'POST',
+			  url: "/bein/program/findMembershipPrograms"
+			}).then(function successCallback(response) {
+				$scope.programMemberships=response.data.resultObj;
+				if($scope.programMemberships.length!=0){
 					$scope.noProgram=false;
 				}else{
-					$scope.programMemberships=null;
 					$scope.noProgram=true;
 				}
 				
-				$scope.$apply();
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
 		
 	}
    
-	function findFirms(){
-		$.ajax({
-			  type:'POST',
-			  url: "../pt/definition/firm/findFirms",
-			  contentType: "application/json; charset=utf-8",				    
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				$scope.firms=res;
-				$scope.firmId=$scope.firms[0].firmId;
-				findInstructors($scope.firmId);
-				findMembershipPrograms();
-				var lang=$scope.ptLang.substring(0, 2);
-				if(lang!="tr"){
-					$scope.dformat='mm/dd/yyyy';
-				}
-				$scope.$apply();
-			});
-	}
+	
 	
 	
 	$scope.addNewMembershipProgram =function(){
-		$scope.progId="0";
-		$scope.progName="";
-		$scope.progShortName="";
-		$scope.progPrice=0;
-		$scope.progUserId="0";
-		$scope.progDescription="";
-		$scope.progComment="";
-		$scope.progStatus="1";
+		$scope.programMembership=new Object();
 		
-		$scope.progRestriction="0";
-		$scope.progRestrictionMonday="-1";
-		$scope.progRestrictionTuesday="-1";
-		$scope.progRestrictionWednesday="-1";
-		$scope.progRestrictionThursday="-1";
-		$scope.progRestrictionFriday="-1";
-		$scope.progRestrictionSaturday="-1";
-		$scope.progRestrictionSunday="-1";
-		$scope.progDuration=0;
-		$scope.progDurationType="0";
+		$scope.programMembership.progUserId="0";
+		$scope.programMembership.progStatus="1";
+		$scope.programMembership.progDurationType="2";
+		$scope.programMembership.progPrice=0;
+		$scope.programMembership.freezeDurationType="0";
+		$scope.programMembership.type="pm";
 		
-		$scope.freezeDurationType="0";
-		$scope.freezeDuration="5";
-		$scope.maxFreezeCount="3";
+		$scope.programMembership.freezeDuration=0;
+		$scope.programMembership.maxFreezeCount=0;
+		$scope.programMembership.progRestriction="0";
+		$scope.programMembership.progBeforeDuration=0;
+		$scope.programMembership.progAfterDuration=0;
 		
-		
-		if (!$scope.$$phase) 
-			$scope.$apply();
 		
 		$scope.willProgramCreate=true;
 		
@@ -207,35 +160,25 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	$scope.showProgram =function(progId){
 		
 		
-		   $.ajax({
-			  type:'POST',
-			  //url: "../pt/program/findProgram/"+progId,
-			  url: "../pt/program/findProgramByProgId/"+progId+"/"+globals.PROGRAM_MEMBERSHIP,
-			  contentType: "application/json; charset=utf-8",
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
-				if(res!=null){
-					$scope.progId=res.progId;
-					$scope.progName=res.progName;
-					$scope.progShortName=res.progShortName;
-					$scope.progPrice=res.progPrice;
-					$scope.progUserId=""+res.progUserId;
-					$scope.progDescription=res.progDescription;
-					$scope.progComment=res.progComment;
-					$scope.firmId=res.firmId;
-					$scope.progStatus=""+res.progStatus;
-					$scope.willProgramCreate=true;
-					$scope.progRestriction=""+res.progRestriction;
-					$scope.progDuration=""+res.progDuration;
-					$scope.progDurationType=""+res.progDurationType;
+		$http({
+			  method: 'POST',
+			  url: "/bein/program/findMembershipProgramById/"+progId
+			}).then(function successCallback(response) {
 					
-					$scope.freezeDurationType=""+res.freezeDurationType;
-					$scope.freezeDuration=res.freezeDuration;
-					$scope.maxFreezeCount=res.maxFreezeCount;
+				     $scope.programMembership=response.data.resultObj;
+					
+					$scope.programMembership.progUserId=""+$scope.programMembership.progUserId;
+					$scope.programMembership.progStatus=""+$scope.programMembership.progStatus;
+					$scope.programMembership.progDurationType=""+$scope.programMembership.progDurationType;
+					$scope.programMembership.progPrice=0;
+					$scope.programMembership.freezeDurationType=""+$scope.programMembership.freezeDurationType;
+					$scope.programMembership.progRestriction=""+$scope.programMembership.progRestriction;
+					$scope.programMembership.type="pm";
 					
 					
-					var programMembershipDetails=res.programMembershipDetails;
+					
+					
+					var programMembershipDetails=$scope.programMembership.programMembershipDetails;
 					$.each(programMembershipDetails,function(i,data){
 						
 						if(data.progRestrictedDay==1){
@@ -253,87 +196,51 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 						}else if(data.progRestrictedDay==7){
 							$scope.progRestrictionSunday=""+data.progRestrictedTime;
 						}
-						
 					});
-					
-					
-					$scope.$apply();
-					
-				}else{
-					toastr.error($translate.instant('noProcessDone'));
-				}
-				
-				
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			{ 
-			  if(jqXHR.status == 404 || textStatus == 'error')	
-				  $(location).attr("href","/beincloud/lock.html");
-			});
-		
-	};
+						
+					}, function errorCallback(response) {
+					    // called asynchronously if an error occurs
+					    // or server returns response with an error status.
+					});
+		 };
 	
 	
 	
 	$scope.createMembershipProgram =function(){
 		
-		if($scope.progStartDate==""){
-			toastr.error($translate.instant('fillRequiredFields'));
-			return;
-		}
-		else if($scope.progEndDate==""){
-			$scope.progEndDate=$scope.progStartDate;
-		}
+		
 		
 		var membershipDetails=generateMembershipDetailProgram($scope.progId);
 		
+		$scope.programMembership.programMembershipDetails=membershipDetails;
 		
-		var frmDatum = {'type':'pm',
-						'progId':$scope.progId,
-				        'firmId':$scope.firmId,
-				        'progName':$scope.progName,
-				        'progStatus':$scope.progStatus,
-				        'progRestriction':$scope.progRestriction,
-						'progUserId':$scope.progUserId,
-				        'progDescription':$scope.progDescription,
-				        'progComment':$scope.progComment,
-				        'progPrice':$scope.progPrice,
-				        'dateFormat':$scope.dformat,
-				        'programMembershipDetails':membershipDetails,
-				        'progDuration':$scope.progDuration,
-				        'progDurationType':$scope.progDurationType,
-				        'freezeDurationType':$scope.freezeDurationType,
-				        'freezeDuration':$scope.freezeDuration,
-				        'maxFreezeCount':$scope.maxFreezeCount,
-				        'progShortName':$scope.progShortName
-					       }; 
-		   $.ajax({
-			  type:'POST',
-			  url: "../pt/program/createProgram",
-			  contentType: "application/json; charset=utf-8",				    
-			  data: JSON.stringify(frmDatum),
-			  dataType: 'json', 
-			  cache:false
-			}).done(function(res) {
+		$http({
+			  method: 'POST',
+			  url: "/bein/program/createMembershipProgram",
+			  data:angular.toJson($scope.programMembership)
+			}).then(function successCallback(response) {
+				$scope.programMembership=response.data.resultObj;
+				$scope.programMembership.type="pm";
 				
-				if(res.resultStatu==1){
-					$scope.progId=res.resultMessage.trim();
-					findMembershipPrograms();
+				$scope.programMembership.progUserId=""+$scope.programMembership.progUserId;
+				$scope.programMembership.progStatus=""+$scope.programMembership.progStatus;
+				$scope.programMembership.progDurationType=""+$scope.programMembership.progDurationType;
+				$scope.programMembership.progPrice=0;
+				$scope.programMembership.freezeDurationType=""+$scope.programMembership.freezeDurationType;
+				$scope.programMembership.progRestriction=""+$scope.programMembership.progRestriction;
+				
+				if(response.data.resultStatu==1){
 					toastr.success($translate.instant('success'));
 				}else{
 					toastr.error($translate.instant('noProcessDone'));
 				}
-				
-			}).fail  (function(jqXHR, textStatus, errorThrown) 
-			{ 
-			  if(jqXHR.status == 404 || textStatus == 'error')	
-				  $(location).attr("href","/beincloud/lock.html");
+				findMembershipPrograms();
+			}, function errorCallback(response) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
 			});
-		
-		
-		
-		
 	}
+	
 	
 	function generateMembershipDetailProgram(progId){
 		
@@ -417,28 +324,25 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
         function (isConfirm) {
             if (isConfirm) {
             	var frmDatum = {"progId":progId,'type':'pm'}; 
-     		   $.ajax({
-     			  type:'POST',
-     			  url: "../pt/program/deleteProgram",
-     			  contentType: "application/json; charset=utf-8",				    
-     			  data: JSON.stringify(frmDatum),
-     			  dataType: 'json', 
-     			  cache:false
-     			}).done(function(res) {
+     		  
+            	
+            	
+            		$http({
+	   				  method: 'POST',
+	   				  url: "/bein/program/deleteMembershipProgram/"+progId,
+	   				}).then(function successCallback(response) {
      				
-     				if(res.resultStatu="1"){
-     					swal($translate.instant("deleted"), $translate.instant("deletedSuccessMessage"), "success");
-     					$scope.willProgramCreate=false;
-     					findMembershipPrograms();
-     				}else{
-     					swal($translate.instant("nodeleted"), $translate.instant("programUsedInSales"), "fail");
-     				}
-     				
-     			}).fail  (function(jqXHR, textStatus, errorThrown) 
-     			{ 
-     			  if(jqXHR.status == 404 || textStatus == 'error')	
-     				  $(location).attr("href","/beincloud/lock.html");
-     			});
+	   					if(response.data.resultStatu=="1"){
+	     					swal($translate.instant("deleted"), $translate.instant("deletedSuccessMessage"), "success");
+	     					$scope.willProgramCreate=false;
+	     					findPrograms();
+	     				}else{
+	     					swal($translate.instant("nodeleted"), $translate.instant("programUsedInSales"), "error");
+	     				}
+	   				}, function errorCallback(response) {
+	   				    // called asynchronously if an error occurs
+	   				    // or server returns response with an error status.
+	   				});
             	
                 
             } else {
