@@ -17,6 +17,8 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	$scope.programMembership.progDurationType="2";
 	$scope.programMembership.progPrice=0;
 	$scope.programMembership.freezeDurationType="0";
+	$scope.programMembership.progComment="";
+	$scope.programMembership.progDescription="";
 	
 	$scope.programMembership.freezeDuration=0;
 	$scope.programMembership.maxFreezeCount=0;
@@ -150,7 +152,8 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 		$scope.programMembership.progRestriction="0";
 		$scope.programMembership.progBeforeDuration=0;
 		$scope.programMembership.progAfterDuration=0;
-		
+		$scope.programMembership.progComment="";
+		$scope.programMembership.progDescription="";
 		
 		$scope.willProgramCreate=true;
 		
@@ -175,8 +178,7 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 					$scope.programMembership.progRestriction=""+$scope.programMembership.progRestriction;
 					$scope.programMembership.type="pm";
 					
-					
-					
+					$scope.willProgramCreate=true;
 					
 					var programMembershipDetails=$scope.programMembership.programMembershipDetails;
 					$.each(programMembershipDetails,function(i,data){
@@ -207,13 +209,8 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	
 	
 	$scope.createMembershipProgram =function(){
-		
-		
-		
 		var membershipDetails=generateMembershipDetailProgram($scope.progId);
-		
 		$scope.programMembership.programMembershipDetails=membershipDetails;
-		
 		$http({
 			  method: 'POST',
 			  url: "/bein/program/createMembershipProgram",
@@ -274,7 +271,7 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 			var thursdayObj=new Object();
 			thursdayObj.progId=progId;
 			thursdayObj.progRestrictedDay=4;
-			thursdayObj.progRestrictedTime=$scope.thursday;
+			thursdayObj.progRestrictedTime=$scope.progRestrictionThursday;
 			
 			days.push(thursdayObj);
 		}
@@ -335,7 +332,7 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	   					if(response.data.resultStatu=="1"){
 	     					swal($translate.instant("deleted"), $translate.instant("deletedSuccessMessage"), "success");
 	     					$scope.willProgramCreate=false;
-	     					findPrograms();
+	     					findMembershipPrograms();
 	     				}else{
 	     					swal($translate.instant("nodeleted"), $translate.instant("programUsedInSales"), "error");
 	     				}

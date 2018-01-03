@@ -51,9 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .formLogin()
                         .loginPage("/login").failureUrl("/lock.html")
-                        .loginProcessingUrl("/login").permitAll().defaultSuccessUrl("/bein/index.html",true)
+                        .loginProcessingUrl("/login").permitAll().defaultSuccessUrl("/beincloud",true)
                 .and()
-                .logout().logoutSuccessUrl("/lock.html")
+                .logout().logoutSuccessUrl("/lock")
                 .permitAll();
 	        
 	      
