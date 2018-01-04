@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import tr.com.beinplanner.settings.dao.PacketRestriction;
 import tr.com.beinplanner.settings.dao.PtGlobal;
 import tr.com.beinplanner.settings.dao.PtRules;
 import tr.com.beinplanner.user.dao.User;
@@ -39,6 +40,7 @@ public class LoginSession implements Serializable {
 	
 	List<PtRules> ptRules;
 	
+	PacketRestriction packetRestriction;
 	
 	public PtGlobal getPtGlobal() {
 		return ptGlobal;
@@ -54,6 +56,14 @@ public class LoginSession implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public PacketRestriction getPacketRestriction() {
+		return packetRestriction;
+	}
+
+	public void setPacketRestriction(PacketRestriction packetRestriction) {
+		this.packetRestriction = packetRestriction;
 	}
 	
 	

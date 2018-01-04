@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
 import tr.com.beinplanner.packetsale.dao.PacketSaleMembership;
 @Repository
-public interface PacketSaleClassRepository extends CrudRepository<PacketSaleClass, Long> {
+public interface PacketSaleClassRepository  extends CrudRepository<PacketSaleClass, Long>  {
 
 	@Query(value="SELECT b.* " + 
 			"				 FROM packet_sale_class b " + 
@@ -25,5 +25,8 @@ public interface PacketSaleClassRepository extends CrudRepository<PacketSaleClas
 			+ "              ORDER BY  SALES_DATE DESC "
 			+ "              LIMIT 5 ",nativeQuery=true )
 	public List<PacketSaleClass> findLast5PacketSales(@Param("firmId") int firmId);
+	
+	public List<PacketSaleClass> findByUserId(long userId);
+	
 	
 }

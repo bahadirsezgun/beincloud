@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import tr.com.beinplanner.definition.service.DefinitionService;
 import tr.com.beinplanner.login.session.LoginSession;
+import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
 import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
 import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
 import tr.com.beinplanner.packetsale.service.PacketSaleService;
@@ -72,6 +73,9 @@ public class PacketSaleTest {
 	@Test
 	public void findPacketSalePersonal() {
 		PacketSalePersonal packetSalePersonal= packetSaleService.findPacketSalePersonalById(37L);
+		
+		
+		
 		assertTrue(packetSalePersonal!=null);
 	}
 	
@@ -88,6 +92,19 @@ public class PacketSaleTest {
 		});
 	}
 	
-	
+	@Test
+	public void findUserBoughtPackets() {
+		
+		List<PacketSaleFactory> packetSaleFactories= packetSaleService.findUserBoughtPackets(49L);
+		
+		packetSaleFactories.forEach(psf->{
+			if(psf instanceof PacketSalePersonal)
+				System.out.println("PACKET SALE PERSONAL : "+((PacketSalePersonal)psf).getSalesDate());
+			else if(psf instanceof PacketSaleClass)
+				System.out.println("PACKET SALE CLASS : "+((PacketSaleClass)psf).getSalesDate());
+			
+			
+		});
+	}
 	
 }

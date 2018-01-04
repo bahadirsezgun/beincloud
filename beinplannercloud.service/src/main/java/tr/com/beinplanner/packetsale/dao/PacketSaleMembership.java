@@ -43,10 +43,10 @@ public class PacketSaleMembership extends PacketSaleFactory {
 	@Column(name="PROG_ID")
 	private int 		progId;
 	
-	
+	/*
 	@Column(name="SALE_STATU")
 	private int 		saleStatu;
-	
+	*/
 	@Column(name="SALES_COMMENT")
 	private String 	salesComment;
 	
@@ -127,13 +127,7 @@ public class PacketSaleMembership extends PacketSaleFactory {
 		this.progId = progId;
 	}
 
-	public int getSaleStatu() {
-		return saleStatu;
-	}
-
-	public void setSaleStatu(int saleStatu) {
-		this.saleStatu = saleStatu;
-	}
+	
 
 	public String getSalesComment() {
 		return salesComment;
@@ -164,6 +158,7 @@ public class PacketSaleMembership extends PacketSaleFactory {
 	}
 
 	public void setSalesDate(Date salesDate) {
+		super.setSalesDate(salesDate);
 		this.salesDate = salesDate;
 	}
 

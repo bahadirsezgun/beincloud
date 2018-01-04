@@ -170,6 +170,7 @@ public class PacketSalePersonal extends PacketSaleFactory {
 	}
 
 	public void setSalesDate(Date salesDate) {
+		super.setSalesDate(salesDate);
 		this.salesDate = salesDate;
 	}
 

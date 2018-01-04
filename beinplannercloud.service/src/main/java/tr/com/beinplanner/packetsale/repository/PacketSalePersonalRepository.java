@@ -26,4 +26,6 @@ public interface PacketSalePersonalRepository extends CrudRepository<PacketSaleP
 	public List<PacketSalePersonal> findLast5PacketSales(@Param("firmId") int firmId);
 	
 	
+	public List<PacketSalePersonal> findByUserId(long userId);
+	
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.beinplanner.security.user.CustomUserDetails;
 
 import tr.com.beinplanner.login.session.LoginSession;
+import tr.com.beinplanner.program.service.ProgramRestrictionService;
 import tr.com.beinplanner.settings.service.SettingsService;
 import tr.com.beinplanner.user.dao.User;
 import tr.com.beinplanner.user.repository.UserRepository;
@@ -38,6 +39,10 @@ public class UserSecurityService  implements UserDetailsService {
 	@Autowired
 	SettingsService settingsService;
 	
+	@Autowired
+	ProgramRestrictionService programRestrictionService;
+	
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<User> optionalUsers = userRepository.findByUserEmail(username);
@@ -50,7 +55,7 @@ public class UserSecurityService  implements UserDetailsService {
         loginSession.setUser(user);
         loginSession.setPtGlobal(settingsService.findPtGlobalByFirmId(user.getFirmId()));
         loginSession.setPtRules(settingsService.findPtRulesByFirmId(user.getFirmId()));
-        
+        loginSession.setPacketRestriction(programRestrictionService.findPacketRestriction(user.getFirmId()));
         return optionalUsers
                 .map(CustomUserDetails::new).get();
 	}

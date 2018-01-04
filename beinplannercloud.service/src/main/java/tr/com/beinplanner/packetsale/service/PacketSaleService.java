@@ -1,6 +1,7 @@
 package tr.com.beinplanner.packetsale.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import tr.com.beinplanner.login.session.LoginSession;
 import tr.com.beinplanner.packetsale.dao.PacketSaleClass;
+import tr.com.beinplanner.packetsale.dao.PacketSaleComparator;
 import tr.com.beinplanner.packetsale.dao.PacketSaleFactory;
 import tr.com.beinplanner.packetsale.dao.PacketSaleMembership;
 import tr.com.beinplanner.packetsale.dao.PacketSalePersonal;
@@ -16,6 +18,7 @@ import tr.com.beinplanner.packetsale.repository.PacketSaleClassRepository;
 import tr.com.beinplanner.packetsale.repository.PacketSaleMembershipRepository;
 import tr.com.beinplanner.packetsale.repository.PacketSalePersonalRepository;
 import tr.com.beinplanner.util.DateTimeUtil;
+import tr.com.beinplanner.util.RestrictionUtil;
 
 @Service
 @Qualifier("packetSaleService")
@@ -32,6 +35,32 @@ public class PacketSaleService {
 	
 	@Autowired
 	PacketSaleMembershipRepository packetSaleMembershipRepository;
+	
+	
+	public List<PacketSaleFactory> findUserBoughtPackets(long userId){
+			List<PacketSaleFactory> packetSaleFactories=new ArrayList<>();
+		
+			if(loginSession.getPacketRestriction().getPersonalRestriction()==RestrictionUtil.RESTIRICTION_FLAG_YES) {
+				List<PacketSalePersonal> packetSalePersonals=packetSalePersonalRepository.findByUserId(userId);
+				packetSalePersonals.forEach(ps->packetSaleFactories.add(ps));
+			}
+			
+			if(loginSession.getPacketRestriction().getGroupRestriction()==RestrictionUtil.RESTIRICTION_FLAG_YES) {
+				List<PacketSaleClass> packetSaleClasses=packetSaleClassRepository.findByUserId(userId);
+				packetSaleClasses.forEach(ps->packetSaleFactories.add(ps));
+			}
+		
+			if(loginSession.getPacketRestriction().getMembershipRestriction()==RestrictionUtil.RESTIRICTION_FLAG_YES) {
+				List<PacketSaleMembership> packetSaleMemberships=packetSaleMembershipRepository.findByUserId(userId);
+				packetSaleMemberships.forEach(ps->packetSaleFactories.add(ps));
+			}
+			
+			Collections.sort(packetSaleFactories, new PacketSaleComparator());
+		
+		return packetSaleFactories;
+	}
+	
+	
 	
 	public PacketSaleClass findPacketSaleClassById(long saleId) {
 		PacketSaleClass packetSaleClass=packetSaleClassRepository.findOne(saleId);
