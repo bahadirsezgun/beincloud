@@ -37,16 +37,18 @@ public class UserService  {
 		return userRepository.findAllByFirmIdAndUserType(firmId, userType);
 	}
 	
+	public List<User> findByUsernameAndUsersurname(String userName,String userSurname,int firmId,int userType){
+		return userRepository.findByUserNameStartingWithAndUserSurnameStartingWithAndFirmIdAndUserType(userName, userSurname, firmId,userType);
+	}
+	
+	
+	
 	public List<User> finsSpecialDateOfUsers(int firmId){
-		
 		Date startDate=OhbeUtil.getDateForNextDate(new Date(), -1*5);
 		Date endDate=OhbeUtil.getDateForNextDate(new Date(), 2);
-		
 		List<User>	userTblsHappy=new ArrayList<User>();
-		
 		try {
 			List<User>	userTbls=userRepository.findAllByFirmId(firmId);
-			
 			userTbls.forEach(users->{
 				Date birthDate=users.getUserBirthday();
 	            if(birthDate!=null){
@@ -62,15 +64,11 @@ public class UserService  {
 	            	}
 	            }
 			});
-			
-			
-			
 			return userTblsHappy;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		
 	}
 	
 	
@@ -80,16 +78,13 @@ public class UserService  {
 		List<User> userInClasss=userRepository.findActiveMemberInClassPlanning(firmId);
 		List<User> userInPersonals=userRepository.findActiveMemberInPersonalPlanning(firmId);
 		
-		
 		ActiveMember activeMember=new ActiveMember();
 		activeMember.setActiveMemberCCount(userInClasss.size());
 		activeMember.setActiveMemberPCount(userInPersonals.size());
 		activeMember.setActiveMemberMCount(userInMemberships.size());
 		
 		activeMember.setActiveMemberCount(activeMember.getActiveMemberCCount()+activeMember.getActiveMemberMCount()+activeMember.getActiveMemberPCount());;
-		
 		return activeMember;
-		
 	}
 	
 }

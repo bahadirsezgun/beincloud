@@ -104,7 +104,7 @@
              templateUrl: '/bein/settings/mailhosting.html'
          }).
         when('/packetsale/sale', {
-             templateUrl: '/bein/packetsale/sale.html'
+             templateUrl: '/bein/packetsale/new_sale.html'
          }).
          when('/packetsale/sale/find', {
              templateUrl: '/bein/packetsale/sale_find.html'

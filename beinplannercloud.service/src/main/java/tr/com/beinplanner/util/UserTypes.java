@@ -19,6 +19,11 @@ public class UserTypes {
 	public static final String USER_TYPE_ADMIN = "userAdmin";
 	public static final String USER_TYPE_PASIVE = "userPassive";
 	
+	public static final int GENDER_MALE=1;
+	public static final int GENDER_FEMALE=2;
+	
+	
+	
 	public static int getUserTypeInt(String userType){
 		
 		if(userType.equals("userMember")){

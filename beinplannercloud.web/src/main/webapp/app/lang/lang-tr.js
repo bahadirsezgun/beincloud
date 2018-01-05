@@ -986,7 +986,8 @@ canceled:"İPTAL",
 postponed:"ÖTELENDİ",
 newMemberCreate:"YENİ ÜYE OLUŞTUR",
 newMemberCreateComment:"Üyenizi hızlı oluşturabilirsiniz. Oluşturulan üye için paket satışı veya direk planlama yapabilirsiniz",
-clear:"Temizle"
+clear:"Temizle",
+userFoundForPacketSale:"Packet Satışı için Bulunan Üyelerimiz..."
 
 
 

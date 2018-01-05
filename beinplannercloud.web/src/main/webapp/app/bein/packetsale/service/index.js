@@ -1,3 +1,5 @@
-define(['../controller/PacketSaleController'
-        ,'../controller/PacketSaleFindController'
-        ,'../controller/PartUserSaleController']);
+define(['../controller/New_PacketSaleUserFindController'
+	    //,'../controller/PacketSaleController'
+        //,'../controller/PacketSaleFindController'
+        //,'../controller/PartUserSaleController',
+        ]);

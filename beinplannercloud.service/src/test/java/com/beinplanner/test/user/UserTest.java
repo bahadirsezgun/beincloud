@@ -2,6 +2,8 @@ package com.beinplanner.test.user;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import tr.com.beinplanner.dashboard.businessEntity.ActiveMember;
-import tr.com.beinplanner.dashboard.businessEntity.LeftPaymentInfo;
-import tr.com.beinplanner.packetpayment.service.PacketPaymentService;
-import tr.com.beinplanner.packetsale.service.PacketSaleService;
+import tr.com.beinplanner.user.dao.User;
 import tr.com.beinplanner.user.service.UserService;
 @EnableAutoConfiguration
 @ComponentScan(basePackages={"com.beinplanner","tr.com.beinplanner"})
@@ -49,5 +49,14 @@ public class UserTest {
 		ActiveMember activeMember= userService.findActiveMemberCount(1);
 	
 		assertTrue(activeMember!=null);
+	}
+	
+	@Test
+	public void findByUsernameAndUsersurname() {
+		List<User> users=userService.findByUsernameAndUsersurname("%", "di%", 1,1);
+	
+		users.forEach(u->System.out.println(u.getUserName()+" "+u.getUserSurname()));
+		
+		assertTrue(users!=null);
 	}
 }

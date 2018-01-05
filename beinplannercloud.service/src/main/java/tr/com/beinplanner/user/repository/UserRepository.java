@@ -54,4 +54,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	List<User> findActiveMemberInMembershipPlanning(@Param("firmId") int firmId);
 
 
+	List<User> findByUserNameStartingWithAndUserSurnameStartingWithAndFirmIdAndUserType(String userName,String userSurname,int firmId,int userType);
+	
+	
 }

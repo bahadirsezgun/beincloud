@@ -90,8 +90,22 @@ public class User implements Cloneable {
 	@Column(name="BONUS_TYPE_C")
 	private int bonusTypeC;
 	
+	@Column(name="USER_COMMENT")
+	private String userComment;
+
 	
-	
+	public String getUserComment() {
+		return userComment;
+	}
+
+
+
+	public void setUserComment(String userComment) {
+		this.userComment = userComment;
+	}
+
+
+
 	public User(User user) {
 		    this.userEmail = user.getUserEmail();
 	        this.bonusTypeC = user.getBonusTypeC() ;
@@ -114,6 +128,7 @@ public class User implements Cloneable {
 	        this.userSsn=user.getUserSsn();
 	        this.userSurname=user.getUserSurname();
 	        this.userType=user.getUserType();
+	        this.userComment=user.getUserComment();
 	        
 	}
 	

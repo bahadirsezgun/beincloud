@@ -99,7 +99,7 @@ ptBossApp.controller('MembershipProgController', function($rootScope,$scope,$tra
 	  			}
 	  			
 	  		});
-			}
+	}
     
     
     function findInstructors(){
