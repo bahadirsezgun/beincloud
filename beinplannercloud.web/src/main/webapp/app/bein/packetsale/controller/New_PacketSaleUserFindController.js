@@ -31,6 +31,7 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
 		if (keyEvent.which === 13){
 			$scope.find();
 		}
+		
 	}
 	
 	$scope.find =function(){
