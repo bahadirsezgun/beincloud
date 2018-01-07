@@ -12,8 +12,11 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
 	
 	$scope.init = function(){
 		$('.animate-panel').animatePanel();
-		commonService.normalHeaderVisible=false;
+		commonService.pageName=$translate.instant("packetProcess");
+		commonService.pageComment=$translate.instant("packetProcessComment");
+		commonService.normalHeaderVisible=true;
 		commonService.setNormalHeader();
+		
 		if(commonService.ptGlobal!=null){
 			$scope.dateFormat=commonService.ptGlobal.ptDateFormat;
 			$scope.dateTimeFormat=commonService.ptGlobal.ptDateTimeFormat;
@@ -31,8 +34,13 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
 		if (keyEvent.which === 13){
 			$scope.find();
 		}
-		//BAHADIR
 	}
+	
+	$scope.saleToUser =function(userId){
+		$location.path('/packetsale/saletouser/'+userId);
+	}
+		
+	
 	
 	$scope.find =function(){
 		 var user=new Object();
@@ -58,7 +66,6 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
 			    // called asynchronously if an error occurs
 			    // or server returns response with an error status.
 			});
-		
 	};
 	
 	
@@ -68,12 +75,14 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
 	});
 	
 	
+	
+	
 	function findGlobals(){
 		$http({
 			method: 'POST',
   		    url: "/bein/global/getGlobals",
   		}).then(function successCallback(response) {
-  			var res=response.resultObj;
+  			var res=response.data.resultObj;
   			if(res!=null){
   				
   				$scope.ptLang=(res.ptLang).substring(0,2);
@@ -81,7 +90,6 @@ ptBossApp.controller('New_PacketSaleUserFindController', function($rootScope,$sc
   				$translate.use($scope.ptLang);
 				$translate.refresh;
 				commonService.setPtGlobal(res);
-				
 				$scope.dateFormat=commonService.ptGlobal.ptDateFormat;
 				$scope.dateTimeFormat=commonService.ptGlobal.ptDateTimeFormat;
   			}

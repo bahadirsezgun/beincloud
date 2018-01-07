@@ -106,7 +106,10 @@
         when('/packetsale/sale', {
              templateUrl: '/bein/packetsale/new_sale.html'
          }).
-         when('/packetsale/sale/find', {
+         when('/packetsale/saletouser/:userId', {
+             templateUrl: '/bein/packetsale/new_saletouser.html'
+         }).
+         /*when('/packetsale/sale/find', {
              templateUrl: '/bein/packetsale/sale_find.html'
          }).
          when('/packetsale/salepersonal', {
@@ -138,7 +141,7 @@
          }).
          when('/packetsale/membership/list', {
              templateUrl: '/bein/packetsalemembership/salemembershipsearch.html'
-         }).
+         }).*/
          when('/packetpayment/confirm', {
              templateUrl: '/bein/packetpayment/payment_confirm.html'
          }).

@@ -3724,7 +3724,14 @@ ul.h-list li:hover a {
   transition: all linear 0.5s;
 }
 
+.ibtn{
+	cursor: pointer;
+	font-size: 24px;
+}
 
+.table-static{
+	table-layout: fixed;
+}
 
 @media (max-width: 1200px) {
   .h4{

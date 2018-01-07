@@ -987,7 +987,12 @@ postponed:"ÖTELENDİ",
 newMemberCreate:"YENİ ÜYE OLUŞTUR",
 newMemberCreateComment:"Üyenizi hızlı oluşturabilirsiniz. Oluşturulan üye için paket satışı veya direk planlama yapabilirsiniz",
 clear:"Temizle",
-userFoundForPacketSale:"Packet Satışı için Bulunan Üyelerimiz..."
+userFoundForPacketSale:"Paket Satışı için Bulunan Üyelerimiz...",
+foundUserCount:"Bulunan Üye Sayısı ",
+filter:"filtrele",
+packetProcess:"Paket İşlemleri",
+packetProcessComment:"Üyemizi bulup, yeni paket satışı yapabiliriz veya mevcut satılmış paketlerini düzenleyebiliriz.",
+
 
 
 

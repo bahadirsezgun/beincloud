@@ -1,5 +1,6 @@
 define(['../controller/New_PacketSaleUserFindController'
-	    //,'../controller/PacketSaleController'
+		,'../controller/New_PacketSaleUserController'
+    		//,'../controller/PacketSaleController'
         //,'../controller/PacketSaleFindController'
         //,'../controller/PartUserSaleController',
         ]);
